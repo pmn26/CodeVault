@@ -1,11 +1,12 @@
-body, html {
-    background-color: #ffffff !important;
-    margin: 0;
-    font-family: poppins, sans-serif;
+.main-page {
+    background-color: #ffffff; /* force white background */
+    padding: 90px 30px 20px;
+    min-height: 100vh;
+    overflow-y: auto;
 }
 
 .app-container {
-    background-color: #ffffff;
+    background: #ffffff;
     display: flex;
     flex-direction: column;
     height: 100vh;
