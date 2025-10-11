@@ -1,0 +1,186 @@
+/*LOGIN-SIGNUP*/
+
+
+.LoginContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: #ffffff;
+}
+
+.LoginCard {
+    text-align: center;
+    max-width: 420px;
+    width: 420px; 
+    padding: 40px;
+    border-radius: 10px;
+}   
+
+.LoginLogo {
+    height: 100px;
+    margin-bottom: 10px;
+    margin: 0 auto 20px auto;
+}
+
+.LoginTitle {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 5px;
+    color: #000;
+}
+
+.LoginSubtext {
+    font-size: 14px;
+    color: #555;
+}
+
+.LoginSubtext a {
+    color: #04042B;
+    text-decoration: none;
+}
+
+.LoginBtn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 10px;
+    margin-top: 15px;
+    border-radius: 6px;
+    font-weight: 500;
+    border: none;
+    cursor: pointer;
+}
+
+.LoginBtn.google {
+    background-color: #7D99EF;
+    color: white;
+}
+
+.LoginBtn.github {
+    background-color: #333;
+    color: white;
+}
+
+.LoginBtn .icon {
+    height: 18px;
+}
+
+.Divider {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    color: #888;
+    font-size: 13px;
+    margin: 25px 0;
+}
+
+.Divider::before,
+.Divider::after {
+    content: "";
+    flex: 1;
+    border-bottom: 1px solid #ddd;
+}
+
+.Divider:not(:empty)::before {
+    margin-right: 0.75em;
+}
+
+.Divider:not(:empty)::after {
+    margin-left: 0.75em;
+}
+
+.Label {
+    display: block;
+    text-align: left;
+    font-size: 14px;
+    margin-bottom: 5px;
+    color: #333;
+}
+
+.EmailInput {
+    width: 100%;
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    margin-bottom: 15px;
+    font-size: 14px;
+}
+
+.Agreement {
+    font-size: 12px;
+    color: #555;
+    text-align: left;
+    margin-bottom: 15px;
+}
+
+.Agreement a {
+    color: #7D99EF;
+    text-decoration: none;
+}
+
+.AgreementCheckbox {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    font-size: 12px;
+    color: #555;
+    text-align: left;
+    margin-bottom: 15px;
+}
+
+.AgreementCheckbox input[type="checkbox"] {
+    margin-top: 2px;
+    cursor: pointer;
+    accent-color: #7D99EF;
+}
+
+.AgreementCheckbox a {
+    color: #7D99EF;
+    text-decoration: none;
+}
+
+
+.GetStarted {
+    width: 100%;
+    padding: 10px;
+    background-color: #bdbdbd;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: not-allowed;
+}
+
+.GetStarted.active {
+    background-color: #7D99EF;
+    cursor: pointer;
+}
+
+.GetStarted.active:hover {
+    background-color: #414d71;
+}
+
+.PasswordContainer {
+    position: relative;
+    width: 100%;
+    margin-bottom: 15px;
+}
+
+.PasswordContainer .EmailInput {
+    width: 100%;
+    padding-right: 40px;
+    box-sizing: border-box;
+}
+
+.EyeIcon {
+    position: absolute;
+    right: 10px;
+    top: 35%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #7D99EF;
+    font-size: 18px;
+}

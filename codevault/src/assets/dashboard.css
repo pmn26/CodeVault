@@ -1,0 +1,143 @@
+/* Top Navigation */
+.top-nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #04042B;
+    padding: 0 20px;
+    color: white;
+    z-index: 1100;
+    transition: transform 0.3s ease-in-out;
+}
+
+.top-nav.hidden {
+    transform: translateY(-100%);
+}
+
+.nav-left, .nav-center, .nav-right {
+    display: flex;
+    align-items: center;
+}
+
+.nav-left {
+    gap: 15px;
+}
+
+.nav-right {
+    display: flex;
+    align-items: center;
+    gap: 15px; 
+    font-size: 15px;
+}
+
+.icons {
+    gap: 15px; 
+    margin-right: 10px;
+    margin-left: 15px;
+    font-size: 20px;
+}
+
+.search-container {
+    display: flex;
+    align-items: center;
+    background-color: white;
+    padding: 5px; /* Adjusted for a better look */
+    border-radius: 10px;
+    width: 100%;
+    max-width: 300px;
+}
+
+.search-container input {
+    border: none;
+    outline: none;
+    width: 100%;
+    padding: 8px;
+}
+
+/* Sidebar */
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 260px;
+    background-color: #04042B;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; 
+    padding: 30px 20px;
+    z-index: 1000;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease-in-out;
+}
+
+.sidebar.open {
+    transform: translateX(0);
+}
+
+.sidebar-header {
+    display: flex;
+    align-items: center;
+    gap: 10px; 
+    margin-bottom: 40px;
+}
+
+.sidebar-toggle {
+    font-size: 24px;
+    color: #ADB8CD;
+    cursor: pointer;
+}
+
+.logo-img {
+    height: 50px;
+    width: auto;
+}
+
+.nav-buttons button {
+    background: rgba(255, 255, 255, 0.59);
+    border: none;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    padding: 15px;
+    font-weight: bold;
+    font-size: 16px;
+    color: #04042B;
+    cursor: pointer;
+    width: 100%;
+}
+
+.nav-buttons button:hover,
+.nav-buttons button.active {
+    background-color: #ADB8CD;
+    color: white;
+}
+
+.sidebar-bottom button {
+    background: none;
+    border: none;
+    color: inherit;
+    font-size: 15px;
+    cursor: pointer;
+    text-align: left;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 200px; /* Adjust for smaller screens */
+    }
+
+    .top-nav {
+        padding: 0 10px; /* Adjust padding */
+    }
+
+    .search-container {
+        max-width: 200px; /* Adjust for smaller screens */
+    }
+}
