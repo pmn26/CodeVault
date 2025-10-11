@@ -1,3 +1,39 @@
+html, body, #root, .app-container {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  background: none; 
+  overflow: hidden;
+}
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.main-content {
+  position: relative;
+  left: 0;
+  width: 100%;
+  height: 100vh; 
+  margin: 0;
+  padding: 0;
+  overflow: auto;
+  background: none;
+}
+
+.main-content.shifted {
+  margin-left: 260px;
+  width: calc(100% - 260px);
+  transition: all 0.3s ease-in-out;
+}
+
+.top-nav:not(.hidden) ~ .main-content {
+  top: 70px;
+  height: calc(100vh - 70px);
+}
+
 /* Top Navigation */
 .top-nav {
     position: fixed;
@@ -46,7 +82,7 @@
     display: flex;
     align-items: center;
     background-color: white;
-    padding: 5px; /* Adjusted for a better look */
+    padding: 5px; 
     border-radius: 10px;
     width: 100%;
     max-width: 300px;
@@ -59,7 +95,6 @@
     padding: 8px;
 }
 
-/* Sidebar */
 .sidebar {
     position: fixed;
     top: 0;
@@ -127,17 +162,16 @@
     text-align: left;
 }
 
-/* Responsive adjustments */
 @media (max-width: 768px) {
     .sidebar {
-        width: 200px; /* Adjust for smaller screens */
+        width: 200px; 
     }
 
     .top-nav {
-        padding: 0 10px; /* Adjust padding */
+        padding: 0 10px; 
     }
 
     .search-container {
-        max-width: 200px; /* Adjust for smaller screens */
+        max-width: 200px; 
     }
 }

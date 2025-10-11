@@ -9,6 +9,7 @@ import Login from "./pages/Login.jsx";
 import MainPage from "./pages/MainPage";
 import CodeEditorPage from "./pages/CodeEditorPage";
 import DashboardLayout from "./components/DashboardLayout.jsx";
+import FoldersPage from "./pages/Folders.jsx";
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
               </ChakraProvider>
             }
           />
+          <Route path="folders" element={<FoldersPage />} />
         </Route>
       </Routes>
     </Router>

@@ -43,7 +43,10 @@ function DashboardLayout() {
                         <button className={location.pathname === "/mainpage" ? "active" : ""}>Home</button>
                     </Link>
                     <Link to="/code-editor">
-                        <button className={location.pathname === "/code-editor" ? "active" : ""}>Code Editor</button>
+                        <button className={location.pathname === "/code-editor" ? "active" : ""}>Compiler</button>
+                    </Link>
+                    <Link to="/folders">
+                        <button className={location.pathname === "/folders" ? "active" : ""}>Folders</button>
                     </Link>
                 </div>
                 <div className="sidebar-bottom">
@@ -53,7 +56,7 @@ function DashboardLayout() {
             </div>
 
             {/* Main Content */}
-            <div className={`main-content ${sidebarOpen ? "shifted" : ""}`} style={{ paddingTop: "90px" }}>
+            <div className={`main-content ${sidebarOpen ? "shifted" : ""}`}>
                 <Outlet />
             </div>
         </div>
