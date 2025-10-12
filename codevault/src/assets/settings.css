@@ -1,0 +1,133 @@
+.settings-container {
+  padding: 30px;
+  color: #f5f5f5;
+  background-color: #04042B; 
+  min-height: 100vh;
+}
+
+.settings-title {
+  font-size: 2rem;
+  margin-bottom: 20px;
+  font-weight: 700;
+  color: #ffffff; 
+}
+
+.settings-content {
+  display: flex;
+  gap: 30px;
+}
+
+/* Sidebar Menu  */
+.settings-menu {
+  width: 250px;
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(255, 255, 255, 0.1);
+}
+
+.settings-menu button {
+  background: none;
+  border: none;
+  text-align: left;
+  padding: 12px 15px;
+  font-size: 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  color: #04042B; 
+  transition: 0.2s;
+  font-weight: 500;
+}
+
+.settings-menu button:hover {
+  background-color: #E8E9FF;
+}
+
+.settings-menu button.active {
+  background-color: #04042B;
+  color: white;
+}
+
+/* Main Settings Details Panel */
+.settings-details {
+  flex: 1;
+  background: #ffffff; 
+  color: #04042B;
+  padding: 25px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(255, 255, 255, 0.1);
+}
+
+.settings-section h2 {
+  margin-bottom: 10px;
+  color: #04042B;
+}
+
+.settings-section p {
+  margin-bottom: 15px;
+  color: #555;
+}
+
+/* Form Fields */
+.settings-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.settings-form label {
+  display: flex;
+  flex-direction: column;
+  font-weight: 500;
+  color: #04042B;
+}
+
+.settings-form input,
+.settings-form textarea {
+  margin-top: 5px;
+  padding: 8px 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+  background-color: #f9f9ff; 
+  color: #04042B;
+}
+
+.settings-form input::placeholder,
+.settings-form textarea::placeholder {
+  color: #777;
+}
+
+/* Buttons */
+.settings-form button {
+  width: fit-content;
+  background-color: #04042B;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.2s;
+  font-weight: 500;
+}
+
+.settings-form button:hover {
+  background-color: #2a2a6c;
+}
+
+.subscription-info button {
+  margin-right: 10px;
+  background-color: #04042B;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.subscription-info button:hover {
+  background-color: #2a2a6c;
+}

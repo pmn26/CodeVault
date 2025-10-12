@@ -15,7 +15,7 @@ html, body, .app-container {
   position: relative;
   left: 0;
   width: 100%;
-  height: 100vh; 
+  height: 100vh;
   margin: 0;
   padding: 0;
   overflow: auto;
@@ -33,144 +33,344 @@ html, body, .app-container {
   height: calc(100vh - 70px);
 }
 
-/* Top Navigation */
+/* TOP NAVIGATION BAR */
 .top-nav {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 70px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background-color: #04042B;
-    padding: 0 20px;
-    color: white;
-    z-index: 1100;
-    transition: transform 0.3s ease-in-out;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #04042B;
+  padding: 0 20px;
+  color: white;
+  z-index: 1100;
+  transition: transform 0.3s ease-in-out;
 }
 
 .top-nav.hidden {
-    transform: translateY(-100%);
+  transform: translateY(-100%);
 }
 
 .nav-left, .nav-center, .nav-right {
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
 }
 
 .nav-left {
-    gap: 15px;
+  gap: 15px;
 }
 
 .nav-right {
-    display: flex;
-    align-items: center;
-    gap: 15px; 
-    font-size: 15px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  font-size: 15px;
 }
 
 .icons {
-    gap: 15px; 
-    margin-right: 10px;
-    margin-left: 15px;
-    font-size: 20px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-right: 10px;
+  margin-left: 15px;
+  font-size: 20px;
 }
 
+.icon-btn {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 22px;
+  cursor: pointer;
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s ease;
+  text-decoration: none;
+}
+
+.icon-btn:hover {
+  color: #ADB8CD;
+}
+
+/* SEARCH BAR */
 .search-container {
-    display: flex;
-    align-items: center;
-    background-color: white;
-    padding: 5px; 
-    border-radius: 10px;
-    width: 100%;
-    max-width: 300px;
+  display: flex;
+  align-items: center;
+  background-color: white;
+  border-radius: 10px;
+  padding: 4px 6px;
+  width: 100%;
+  max-width: 380px;
+  height: 36px;
 }
 
 .search-container input {
-    border: none;
-    outline: none;
-    width: 100%;
-    padding: 8px;
+  background-color: white;
+  color: #04042B;
+  border: none;
+  outline: none;
+  width: 100%;
+  padding: 6px 8px;
+  font-size: 14px;
 }
 
+.search-container input::placeholder {
+  color: #888;
+}
+
+/* SIDEBAR */
 .sidebar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    height: 100%;
-    width: 260px;
-    background-color: #04042B;
-    color: white;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between; 
-    padding: 30px 20px;
-    z-index: 1000;
-    transform: translateX(-100%);
-    transition: transform 0.3s ease-in-out;
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 260px;
+  background-color: #04042B;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 30px 20px;
+  z-index: 1000;
+  transform: translateX(-100%);
+  transition: transform 0.3s ease-in-out;
 }
 
 .sidebar.open {
-    transform: translateX(0);
+  transform: translateX(0);
 }
 
 .sidebar-header {
-    display: flex;
-    align-items: center;
-    gap: 10px; 
-    margin-bottom: 40px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 40px;
 }
 
 .sidebar-toggle {
-    font-size: 24px;
-    color: #ADB8CD;
-    cursor: pointer;
+  font-size: 24px;
+  color: white;
+  cursor: pointer;
+  transition: color 0.2s ease-in-out;
+}
+
+.sidebar-toggle:hover {
+  color: #ADB8CD;
 }
 
 .logo-img {
-    height: 50px;
-    width: auto;
+  height: 50px;
+  width: auto;
+}
+
+/* SIDEBAR BUTTONS */
+.nav-buttons {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;  /* Centers vertically */
+  flex-grow: 1;
+  gap: 15px; /* Keeps consistent spacing */
 }
 
 .nav-buttons button {
-    background: rgba(255, 255, 255, 0.59);
-    border: none;
-    border-radius: 10px;
-    margin-bottom: 15px;
-    padding: 15px;
-    font-weight: bold;
-    font-size: 16px;
-    color: #04042B;
-    cursor: pointer;
-    width: 100%;
+  background: white;
+  border: 2px solid #04042B;
+  border-radius: 10px;
+  padding: 15px; /* Keeps original button size */
+  font-weight: bold;
+  font-size: 16px;
+  color: #04042B;
+  cursor: pointer;
+  width: 200px; /* ✅ Set a fixed width to keep button size consistent */
+  transition: all 0.2s ease-in-out;
 }
 
 .nav-buttons button:hover,
 .nav-buttons button.active {
-    background-color: #ADB8CD;
-    color: white;
+  background-color: #ADB8CD;
+  color: white;
+  border-color: #ADB8CD;
 }
+
 
 .sidebar-bottom button {
-    background: none;
-    border: none;
-    color: inherit;
-    font-size: 15px;
-    cursor: pointer;
-    text-align: left;
+  background: none;
+  border: none;
+  color: inherit;
+  font-size: 15px;
+  cursor: pointer;
+  text-align: left;
 }
 
+.sidebar-bottom button:hover {
+  color: #ADB8CD;
+}
+
+/* RESPONSIVE */
 @media (max-width: 768px) {
-    .sidebar {
-        width: 200px; 
-    }
+  .sidebar {
+    width: 200px;
+  }
 
-    .top-nav {
-        padding: 0 10px; 
-    }
+  .top-nav {
+    padding: 0 10px;
+  }
 
-    .search-container {
-        max-width: 200px; 
-    }
+  .search-container {
+    max-width: 200px;
+  }
+}
+
+/* ENSURE ICON COLORS STAY WHITE */
+.top-nav button,
+.top-nav .menu-icon,
+.top-nav .sidebar-toggle,
+.top-nav svg,
+.top-nav i {
+  color: white !important;
+  fill: white !important;
+  stroke: white !important;
+}
+
+/* NOTIFICATION DROPDOWN */
+.notification-wrapper {
+  position: relative;
+}
+
+.notification-dropdown {
+  position: absolute;
+  top: 40px;
+  right: 0;
+  width: 350px;
+  background: white;
+  color: #04042B;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  padding: 15px;
+  z-index: 1200;
+}
+
+.notification-dropdown h4 {
+  margin: 0 0 10px 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #04042B;
+}
+
+.notification-tabs {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 15px;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 8px;
+}
+
+.notification-tabs button {
+  background: none !important;
+  border: none !important;
+  color: #04042B !important;
+  font-weight: 500;
+  cursor: pointer;
+  font-size: 15px;
+  transition: color 0.2s ease-in-out, border-bottom 0.2s;
+  padding-bottom: 5px;
+}
+
+.notification-tabs button:hover {
+  color: #4D5BAA !important;
+}
+
+.notification-tabs button.active {
+  color: #4D5BAA !important;
+  font-weight: 700;
+  border-bottom: 2px solid #4D5BAA;
+}
+
+.notification-content {
+  text-align: center;
+  color: #666;
+  padding: 40px 0;
+  font-size: 14px;
+}
+
+/* PROFILE DROPDOWN */
+.profile-wrapper {
+  position: relative;
+}
+
+.profile-dropdown {
+  position: absolute;
+  top: 40px;
+  right: 0;
+  width: 190px;
+  background: #04042B;
+  color: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  padding: 10px 0;
+  z-index: 1200;
+  animation: fadeDown 0.15s ease-out;
+}
+
+.profile-dropdown::before {
+  content: "";
+  position: absolute;
+  top: -8px;
+  right: 15px;
+  border-width: 0 8px 8px 8px;
+  border-style: solid;
+  border-color: transparent transparent #04042B transparent;
+}
+
+.profile-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 15px;
+  color: white;
+  background: none;
+  border: none;
+  font-size: 15px;
+  cursor: pointer;
+  text-decoration: none;
+  width: 100%;
+  text-align: left;
+  transition: background-color 0.2s ease-in-out, color 0.2s;
+}
+
+.profile-item:hover {
+  background-color: #101056;
+  color: #ADB8CD;
+}
+
+.profile-icon {
+  font-size: 16px;
+}
+
+/* DROPDOWN ANIMATION */
+@keyframes fadeDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* TOP NAV HOVER COLORS */
+.top-nav button:hover,
+.top-nav .menu-icon:hover,
+.top-nav svg:hover,
+.top-nav i:hover {
+  color: #ADB8CD !important;
+  fill: #ADB8CD !important;
+  stroke: #ADB8CD !important;
 }

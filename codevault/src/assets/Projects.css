@@ -1,5 +1,5 @@
 /* MAIN PAGE CONTAINER             */
-.folders-page {
+.projects-page {
   padding: 20px 40px;
   background-color: #f9f9f9;
   min-height: 100vh;
@@ -8,26 +8,26 @@
 }
 
 /* HEADER AREA                     */
-.folders-header {
+.projects-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 40px;
 }
 
-.folders-header h2 {
+.projects-header h2 {
   font-size: 22px;
   font-weight: 600;
   color: #1a1a1a;
 }
 
-.folders-controls {
+.projects-controls {
   display: flex;
   align-items: center;
   gap: 12px;
 }
 
-.create-btn {
+.upload-btn {
   background-color: #000;
   color: white;
   border: none;
@@ -38,7 +38,7 @@
   transition: background-color 0.2s ease;
 }
 
-.create-btn:hover {
+.upload-btn:hover {
   background-color: #333;
 }
 
@@ -48,76 +48,80 @@
   color: #333;
 }
 
-/* FOLDER GRID                     */
-.folders-grid {
+/* PROJECT GRID                    */
+.projects-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
   gap: 30px;
   justify-items: center;
 }
 
-.folder-item {
+.project-item {
   display: flex;
   flex-direction: column;
   align-items: center;
   transition: transform 0.2s ease;
 }
 
-.folder-item:hover {
+.project-item:hover {
   transform: translateY(-3px);
 }
 
-.folder-icon {
+.project-icon {
   font-size: 70px;
   color: #b6bed1;
   margin-bottom: 8px;
 }
 
-.folder-item p {
+.project-item p {
   font-weight: 500;
   color: #1a1a1a;
   text-align: center;
 }
 
-/* EMPTY STATE    */
+/* EMPTY STATE   */
 .empty-state {
   text-align: center;
-  margin-top: 100px;
+  margin-top: 120px; 
   color: #4a4a4a;
 }
 
-.empty-folder-icon {
-  font-size: 120px;
+.empty-project-icon {
+  font-size: 120px; 
   color: #b6bed1;
   margin-bottom: 20px;
 }
 
-.empty-state h3 {
+.empty-state h3,
+.empty-title {
   font-size: 18px;
   font-weight: 600;
-  margin-bottom: 5px;
+  margin-bottom: 8px;
+  color: #1a1a1a;
 }
 
-.empty-state p {
+.empty-state p,
+.empty-subtitle {
   font-size: 14px;
   color: #666;
+  line-height: 1.5;
 }
 
-/* RESPONSIVE                     */
+/* RESPONSIVE                      */
 @media (max-width: 768px) {
-  .folders-page {
+  .projects-page {
     padding: 20px;
   }
 
-  .folders-header h2 {
+  .projects-header h2 {
     font-size: 18px;
   }
 
-  .create-btn {
+  .upload-btn {
     padding: 6px 16px;
   }
 
-  .empty-folder-icon {
+  .empty-project-icon {
     font-size: 90px;
   }
 }

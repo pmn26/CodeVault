@@ -1,127 +1,127 @@
 .main-page {
-    background-color: #ffffff; /* force white background */
-    padding: 90px 30px 20px;
-    min-height: 100vh;
-    overflow-y: auto;
+  background-color: #f8f9fc;
+  padding: 40px 50px;
+  min-height: 100vh;
+  overflow-y: auto;
+  font-family: 'Poppins', sans-serif;
 }
 
-.app-container {
-    background: #ffffff;
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-    width: 100%;
-    overflow: hidden;
-    padding: 90px;
-}
-
-.main-content {
-    padding: 90px 30px 20px;
-    flex: 1;
-    overflow-y: auto;
-    transition: margin-left 0.3s ease-in-out, padding-top 0.3s ease-in-out;
-}
-
-.main-content.shifted {
-    margin-left: 260px;
-}
-
-/* Styling for the upload card */
+/* Upload Card */
 .upload-card {
-    background-color: #04042B;
-    color: white;
-    border-radius: 15px;
-    padding: 30px;
-    margin-bottom: 20px;
-    text-align: center;
+  background-color: #04042b;
+  color: white;
+  border-radius: 12px;
+  padding: 40px;
+  text-align: center;
+  margin-bottom: 25px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .upload-card h3 {
-    font-size: 24px;
-    margin-bottom: 15px;
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 10px;
 }
 
 .upload-card p {
-    font-size: 16px;
-    margin-bottom: 20px;
+  font-size: 14px;
+  opacity: 0.8;
+  margin-bottom: 20px;
 }
 
-/* Folder actions section */
-.folder-actions {
-    display: flex;
-    gap: 20px;
-    margin-bottom: 20px;
-    justify-content: center;
-}
-
-/* Folders and Projects display section */
-.folders-projects {
-    display: flex;
-    gap: 20px;
-    flex-wrap: wrap;
-    justify-content: space-between;
-}
-
-.folder-container, .project-container {
-    flex: 1;
-    min-width: 220px;
-    background-color: #e6ecf7;
-    border-radius: 15px;
-    padding: 30px;
-    text-align: center;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
-}
-
-.folder-container p, .project-container p {
-    font-size: 18px;
-    color: #444;
-}
-
-.folder-container small, .project-container small {
-    font-size: 14px;
-    color: #888;
-}
-
-/* Buttons styling */
 .Main-Buttons {
-    background-color: #7787A9;
-    color: white;
-    border: none;
-    padding: 12px 15px;
-    min-width: 180px; /* Adjusted width for better balance */
-    font-size: 14px;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease-in-out;
-    display: inline-block;
-    margin: 10px 5px;
-    text-align: center;
+  background-color: #7787a9;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.3s ease;
 }
 
 .Main-Buttons:hover {
-    background-color: #4ea8ff;
-    transform: translateY(-2px); /* Subtle lift effect on hover */
-}
-
-.Main-Buttons:focus {
-    outline: none;
-    box-shadow: 0 0 5px rgba(0, 123, 255, 0.7);
+  background-color: #4ea8ff;
+  transform: translateY(-2px);
 }
 
 .Main-Buttons.upgrade {
-    background-color: #6c757d;
+  background-color: #6c757d;
 }
 
 .Main-Buttons.upgrade:hover {
-    background-color: #495057;
-    transform: translateY(-2px); /* Same hover effect for upgrade button */
+  background-color: #495057;
 }
 
-/* Button for creating folder, uploading files */
-.Main-Buttons.create-folder, .Main-Buttons.upload-files {
-    background-color: #28a745; /* Green background for create folder */
+/* Folder Actions */
+.folder-actions {
+  display: flex;
+  justify-content: center;
+  gap: 25px;
+  margin-bottom: 30px;
 }
 
-.Main-Buttons.create-folder:hover, .Main-Buttons.upload-files:hover {
-    background-color: #218838; /* Darker green for hover effect */
+/* Content Section (folders + projects) */
+.content-section {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 30px;
+}
+
+/* Folders */
+.folders-area, .projects-area {
+  flex: 1;
+  min-width: 300px;
+}
+
+.folders-area h4, .projects-area h4 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #04042b;
+  margin-bottom: 15px;
+}
+
+.folder-grid, .project-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+/* Folder cards */
+.folder-card {
+  background-color: #f0f3fa;
+  border-radius: 12px;
+  padding: 25px;
+  text-align: center;
+  width: 140px;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease;
+}
+
+.folder-card:hover {
+  transform: translateY(-4px);
+}
+
+.folder-card p {
+  margin-top: 8px;
+  font-size: 14px;
+  color: #333;
+}
+
+/* Project cards */
+.project-card {
+  background-color: #e6ecf7;
+  border-radius: 12px;
+  padding: 25px;
+  width: 160px;
+  text-align: center;
+  font-weight: 500;
+  color: #333;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease;
+}
+
+.project-card:hover {
+  transform: translateY(-4px);
 }

@@ -1,38 +1,39 @@
 import React from "react";
 import "../assets/folders.css";
 import { FaEllipsisV } from "react-icons/fa";
+import { BiFolder } from "react-icons/bi";
 
 function FoldersPage() {
-const folders = [
-    { name: "Java" },
-    { name: "Python" },
-    { name: "C#" },
-    { name: "HTML" },
-    { name: "Javascript" },
-    { name: "Typescript" },
-    { name: "PHP" },
-];
+  const folders = []; 
 
-return (
+  return (
     <div className="folders-page">
-    <div className="folders-header">
+      <div className="folders-header">
         <h2>My Folders</h2>
         <div className="folders-controls">
-        <button className="create-btn">Create</button>
-        <FaEllipsisV className="menu-icon" />
+          <button className="create-btn">Create</button>
+          <FaEllipsisV className="menu-icon" />
         </div>
-    </div>
+      </div>
 
-    <div className="folders-grid">
-        {folders.map((folder, index) => (
-        <div key={index} className="folder-item">
-            <i className="bi bi-folder-fill folder-icon"></i>
-            <p>{folder.name}</p>
+      {folders.length === 0 ? (
+        <div className="empty-state">
+          <BiFolder className="empty-folder-icon" />
+          <h3>No folders!</h3>
+          <p>use the <b>“Create”</b> button</p>
         </div>
-        ))}
+      ) : (
+        <div className="folders-grid">
+          {folders.map((folder, index) => (
+            <div key={index} className="folder-item">
+              <BiFolder className="folder-icon" />
+              <p>{folder.name}</p>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
-    </div>
-);
+  );
 }
 
 export default FoldersPage;
