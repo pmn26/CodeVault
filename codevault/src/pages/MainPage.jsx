@@ -9,7 +9,7 @@ function MainPage() {
     <div className="main-page">
       <div className="upload-card">
         <h3>Lorem Ipsum</h3>
-        <p>Lorem ipsum Lorem ipsum Lorem ipsum</p>
+        <p>Lorem ipsum Lorem ipsum Lorem ipsumDSFSDF</p>
         <button className="Main-Buttons upgrade">Upgrade</button>
       </div>
 
