@@ -524,10 +524,9 @@
         </p>
         </section>
 
-        
-        <hr className="hrr"></hr>
 
         <footer className="site-footer">
+            <hr className="hrr"></hr>
         <div className="footer-top text-center mb-3">
             <p>© 2025 Builder.io, Inc.</p>
             <div className="footer-links">

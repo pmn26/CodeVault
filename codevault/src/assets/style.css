@@ -1208,12 +1208,13 @@ html, body {
 
 .hrr {
     color: #ccc;
+    padding-bottom: 20px;
 }
 
 .site-footer {
     background-color: #0A0A23;
     color: white;
-    padding: 40px 20px 20px;
+    padding: 10px 20px 20px;
     font-family: "Poppins", sans-serif;
 }
 

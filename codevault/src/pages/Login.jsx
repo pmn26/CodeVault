@@ -3,6 +3,7 @@ import logo from "../assets/CodeVault-icon.png";
 import "../assets/loginandsignup.css";
 import { useNavigate } from "react-router-dom";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
+import { auth, provider, signInWithPopup } from "../firebase";
 
 
 function Login() {
@@ -21,6 +22,17 @@ const handlePasswordChange = (e) => {
 
 const allValid = /\S+@\S+\.\S+/.test(email) && password.trim() !== "";
 
+const handleGoogleLogin = async () => {
+    try {
+    const result = await signInWithPopup(auth, provider);
+    const user = result.user;
+    console.log("✅ Google user:", user);
+    navigate("/MainPage");
+    } catch (error) {
+    console.error("❌ Google Sign-In Error:", error);
+    }
+};
+
 const handleLogin = () => {
     if (allValid) {
     console.log("Logging in with", { email, password });
@@ -36,6 +48,17 @@ return (
         <p className="LoginSubtext">
         Don’t have an account? <a href="/Signup">Sign up</a>
         </p>
+
+        <div className="SocialLogin">
+        <button className="GoogleButton" onClick={handleGoogleLogin}>
+            <img
+            src="https://developers.google.com/identity/images/g-logo.png"
+            alt="Google logo"
+            className="GoogleLogo"
+            />
+            Continue with Google
+        </button>
+        </div>
 
         <div className="Divider">
         <span>Or, log in with your email</span>

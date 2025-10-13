@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import logo from "../assets/CodeVault-icon.png";
 import "../assets/loginandsignup.css";
-import { useNavigate } from "react-router-dom"; 
+import { useNavigate } from "react-router-dom";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
+import { auth, provider, signInWithPopup } from "../firebase"; // ✅ import Firebase
 
 function Login() {
 const [email, setEmail] = useState("");
@@ -13,6 +14,17 @@ const [showFields, setShowFields] = useState(false);
 const [showPassword, setShowPassword] = useState(false);
 
 const navigate = useNavigate();
+
+const handleGoogleLogin = async () => {
+    try {
+    const result = await signInWithPopup(auth, provider);
+    const user = result.user;
+    console.log("✅ Google user:", user);
+    navigate("/MainPage");
+    } catch (error) {
+    console.error("❌ Google Sign-In Error:", error);
+    }
+};
 
 const handleEmailChange = (e) => {
     const value = e.target.value;
@@ -29,7 +41,6 @@ const handleEmailChange = (e) => {
 };
 
 const handlePasswordChange = (e) => setPassword(e.target.value);
-
 const handleCheckboxChange = (e) => setAgreement(e.target.checked);
 
 const allValid =
@@ -54,11 +65,22 @@ return (
         Already have an account? <a href="/login">Log in</a>
         </p>
 
+        {/* ✅ Google Button */}
+        <div className="SocialLogin">
+        <button className="GoogleButton" onClick={handleGoogleLogin}>
+            <img
+            src="https://developers.google.com/identity/images/g-logo.png"
+            alt="Google logo"
+            className="GoogleLogo"
+            />
+            Continue with Google
+        </button>
+        </div>
+
         <div className="Divider">
         <span>Or, sign up with your email</span>
         </div>
 
-        {/* Email field */}
         <label className="Label">Work email *</label>
         <input
         type="email"
@@ -68,7 +90,6 @@ return (
         onChange={handleEmailChange}
         />
 
-        {/* Conditional fields */}
         {showFields && (
         <>
             <label className="Label">Full Name *</label>
@@ -105,8 +126,7 @@ return (
                 onChange={handleCheckboxChange}
             />
             <label htmlFor="agreement">
-                I agree to CodeVault’s{" "}
-                <a href="#">terms of service</a> and{" "}
+                I agree to CodeVault’s <a href="#">terms of service</a> and{" "}
                 <a href="#">privacy policy</a>.
             </label>
             </div>
