@@ -1,0 +1,110 @@
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100% !important;
+  height: 100% !important;
+  background: rgba(0, 0, 0, 0.5) !important; 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background-color: #fff !important;
+  border-radius: 12px !important;
+  width: 400px !important;
+  max-width: 90% !important;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.2) !important;
+  padding: 24px 30px !important;
+  font-family: 'Poppins', sans-serif !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 20px !important;
+}
+
+.modal-header {
+  font-size: 20px !important;
+  font-weight: 600 !important;
+  color: #202124 !important;
+}
+
+.modal-body {
+  display: flex;
+  flex-direction: column;
+  gap: 15px !important;
+}
+
+.drop-zone {
+  padding: 30px !important;
+  border: 2px dashed #dadce0 !important;
+  border-radius: 8px !important;
+  text-align: center !important;
+  color: #5f6368 !important;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.drop-zone.dragover {
+  border-color: #4ea8ff !important;
+  background-color: #f1f3f4 !important;
+  color: #4ea8ff !important;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.modal-footer button {
+  padding: 10px 20px !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  border-radius: 8px !important;
+  border: none !important;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.modal-footer .cancel-btn {
+  background: transparent !important;
+  color: #202124 !important;
+}
+
+.modal-footer .cancel-btn:hover {
+  background: #e2e4e6 !important;
+}
+
+.modal-footer .action-btn {
+  background: #4ea8ff !important;
+  color: white !important;
+}
+
+.modal-footer .action-btn:hover {
+  background: #4ea8ff !important;
+}
+
+.close-btn {
+  position: absolute !important;
+  top: 12px !important;
+  right: 12px !important;
+  background: none !important;
+  border: none !important;
+  font-size: 22px !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  color: #5f6368 !important;
+  line-height: 1 !important;
+  padding: 0 !important;
+  width: auto !important;
+  height: auto !important;
+  display: inline-block !important;
+  transition: color 0.2s ease !important;
+}
+
+.close-btn:hover {
+  color: #4ea8ff !important;
+}
+

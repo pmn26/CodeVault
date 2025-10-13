@@ -27,7 +27,11 @@ html, body {
     align-items: center;
 }
 
+/* ---------- NAVBAR ---------- */
 .navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     text-align: center;
     background: rgba(70, 72, 76, 0.41);
     backdrop-filter: blur(20.5px);
@@ -37,22 +41,20 @@ html, body {
     top: 0;
     left: 0;
     width: 100%;
-    flex-direction: column;
-    justify-content: center;
-    align-self: center;
-    padding: 20px;
+    padding: 0 20px;
     height: 80px;
     transition: background-color 0.3s ease;
+    position: fixed;
 }
 
 .navbar.scrolled {
-    background: rgba(70, 72, 76, 0.8); 
+    background: rgba(70, 72, 76, 0.8);
 }
 
+/* Navbar hover items */
 .nav-hover {
     position: relative;
     transition: all 0.3s ease-in-out;
-    padding: 10px 10px;
 }
 
 .nav-hover:hover {
@@ -88,7 +90,7 @@ html, body {
 #logo {
     display: flex;
     align-items: center;
-    height: 80px;
+    height: 50px; /* Adjusted logo height */
 }
 
 #tabs {
@@ -100,47 +102,80 @@ html, body {
     cursor: pointer;
 }
 
-.btn-outline-primary,
-.pricing-btn {
+/* ---------- BUTTONS FIX ---------- */
+.navbar .btn-outline-primary,
+.navbar .pricing-btn {
     background-color: #0A0A23 !important;
     color: #7D99EF !important;
+    border: 1px solid #7D99EF !important;
+    padding: 0.5rem 1rem !important;
+    font-size: 0.875rem !important;
+    border-radius: 0.5rem !important;
+    font-weight: 600 !important;
+    cursor: pointer;
+    display: inline-block;
+    height: auto !important;
+    line-height: 1.2 !important;
+    min-width: auto !important;
+    transition: all 0.3s ease !important;
+}
+
+.pricing-btn {
+    background-color: #0A0A23 !important; /* dark bg */
+    color: #7D99EF !important;           /* text blue */
     border: 1px solid #7D99EF !important;
     padding: 0.75rem 1.5rem !important;
     border-radius: 0.5rem !important;
     font-weight: 600 !important;
     transition: all 0.3s ease !important;
-    text-decoration: none !important;
     cursor: pointer;
-    display: inline-block;
 }
 
-.btn-outline-primary:hover,
 .pricing-btn:hover {
+    background-color: #414d71 !important; /* dark blue hover */
+    color: white !important;               /* keep text white */
+    transform: translateY(-2px);
+}
+
+.navbar .btn-outline-primary:hover,
+.navbar .pricing-btn:hover {
     background-color: #414d71 !important;
     color: white !important;
     transform: translateY(-2px);
 }
 
-.btn-primary,
-.premium-btn {
+.navbar .btn-primary,
+.navbar .premium-btn {
     background-color: #7D99EF !important;
     border: none !important;
     color: white !important;
-    padding: 0.75rem 1.5rem !important;
+    padding: 0.5rem 1.5rem !important;
+    font-size: 0.875rem !important;
     border-radius: 0.5rem !important;
     font-weight: 600 !important;
-    transition: all 0.3s ease !important;
     cursor: pointer;
-    display: inline-block;
+    display: flex;
+    height: auto !important;
+    line-height: 1.2 !important;
+    min-width: auto !important;
+    transition: all 0.3s ease !important;
+    white-space: nowrap;
+    text-decoration: none !important;
 }
 
-.btn-primary:hover,
-.premium-btn:hover {
+.navbar .btn-primary:hover,
+.navbar .premium-btn:hover {
     background-color: #414d71 !important;
     transform: translateY(-2px);
 }
 
-/* Drop down menu */
+.d-flex a,
+.d-flex a:hover,
+.d-flex a:focus {
+    text-decoration: none; /* no underline */
+}
+
+/* ---------- DROPDOWN ---------- */
 .nav-item.dropdown {
     position: relative;
 }
@@ -246,6 +281,7 @@ html, body {
     transform: translateX(4px);
 }
 
+/* MOBILE DROPDOWN */
 @media (max-width: 991px) {
     .mega-menu {
         position: static;
@@ -268,6 +304,7 @@ html, body {
         justify-content: center;
     }
 }
+
 
 /* WELCOME SECTION */
 
@@ -303,6 +340,61 @@ html, body {
     opacity: 0.8;
     margin-bottom: 2rem;
 }
+
+/* Container for buttons */
+.navbar-buttons {
+    display: flex;
+    gap: 1rem; /* spacing between buttons */
+    justify-content: center;
+    align-items: center;
+    margin-top: 1rem;
+}
+
+/* Try it now button (outline) */
+.navbar-buttons .btn-outline-primary {
+    background-color: #0A0A23; /* dark background */
+    color: #7D99EF; /* blue text */
+    border: 1px solid #7D99EF;
+    padding: 0.5rem 1.5rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    font-size: 0.875rem;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none; /* removes underline */
+    transition: all 0.3s ease;
+}
+
+.navbar-buttons .btn-outline-primary:hover {
+    background-color: #414d71;
+    color: white;
+    transform: translateY(-2px);
+}
+
+/* Get a demo button (primary) */
+.navbar-buttons .btn-primary {
+    background-color: #7D99EF;
+    color: white;
+    border: none;
+    padding: 0.5rem 1.5rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    font-size: 0.875rem;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none; /* removes underline */
+    transition: all 0.3s ease;
+}
+
+.navbar-buttons .btn-primary:hover {
+    background-color: #414d71;
+    transform: translateY(-2px);
+}
+
 
 .video-container {
     display: flex;
@@ -392,7 +484,7 @@ html, body {
     --avatar-count: 12; 
     width: calc(120px * var(--avatar-count) + (var(--avatar-count) - 1) * 1rem);
     animation: scroll 20s linear infinite;
-    gap: 1rem;
+    gap: 3rem;
     align-items: center;
     will-change: transform;
 }
@@ -407,9 +499,9 @@ html, body {
 }
 
 .avatar-img {
-    width: 120px;
+    width: 00px;
     height: 80px;
-    object-fit: cover;
+    object-fit: contain;
     border-radius: 10px;
     flex-shrink: 0;
     transition: transform 0.3s ease;
@@ -814,7 +906,6 @@ html, body {
     margin-bottom: 40px;
 }
 
-
 .faq-list {
     display: flex;
     flex-direction: column;
@@ -834,7 +925,7 @@ html, body {
     background: linear-gradient(145deg, #0A0A23, #101036);
 }
 
-.faq-question {
+.faq-item .faq-question {
     width: 100%;
     background: none;
     border: none;
@@ -850,8 +941,8 @@ html, body {
     transition: color 0.3s ease;
 }
 
-.faq-question:hover {
-    color: #7d99ef;
+.faq-item .faq-question:hover {
+    color: #7d99ef !important; /* force blue */
 }
 
 .arrow {
@@ -865,6 +956,7 @@ html, body {
     color: #cfcfcf;
     line-height: 1.6;
 }
+
 
 
 /* INTEGRATIONS SECTION */
@@ -1173,22 +1265,24 @@ html, body {
 }
 
 .newsletter-button {
-    background: #4ea8ff;
+    background-color: #4ea8ff; /* keep your blue */
     color: white;
     border: none;
-    font-size: 20px;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
+    font-size: 18px; /* slightly smaller for better fit */
+    width: 42px;      /* ensures perfect circle */
+    height: 42px;     /* ensures perfect circle */
+    border-radius: 50%; 
     cursor: pointer;
+    display: flex;          /* center the icon/text */
+    justify-content: center; 
+    align-items: center;
     transition: background 0.3s ease, transform 0.2s ease;
 }
 
 .newsletter-button:hover {
-    background: #414d71;
-    transform: scale(1.05);
+    background-color: #414d71; /* dark blue on hover */
+    transform: scale(1.1);      /* subtle grow effect */
 }
-
 .newsletter-policy {
     font-size: 13px;
     color: #bfbfbf;
@@ -1277,4 +1371,50 @@ html, body {
 .fade-section.active {
     opacity: 1;
     transform: translateY(0); 
+}
+
+.contact-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.contact-form h3 {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.contact-form label {
+  display: flex;
+  flex-direction: column;
+  font-size: 14px;
+  color: #333;
+}
+
+.contact-form input,
+.contact-form textarea {
+  margin-top: 5px;
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+.contact-form textarea {
+  min-height: 80px;
+  resize: vertical;
+}
+
+.submit-btn {
+  padding: 10px 16px;
+  background: #1a73e8;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.submit-btn:hover {
+  background: #1765c1;
 }

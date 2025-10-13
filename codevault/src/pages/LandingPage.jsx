@@ -1,16 +1,27 @@
-    import React, { useEffect, useRef } from "react";
+    import React, { useEffect, useRef, useState } from "react";
     import * as THREE from "three";
     import NET from "vanta/dist/vanta.net.min.js";
     import "../assets/style.css";
     import logo from "../assets/CODEVAULT-LOGO.png";
     import { Link } from "react-router-dom";
     import demoVideo from "../assets/demo.mp4";
-    import logoAvatar from "../assets/cicssglogo.png";
+    import logo1 from "../assets/1.png";
+    import logo2 from "../assets/2.png";
+    import logo3 from "../assets/3.png";
+    import logo4 from "../assets/4.png";
+    import logo5 from "../assets/5.png";
+    import logo6 from "../assets/6.png";
+    import logo7 from "../assets/7.png";
+    import logo8 from "../assets/8.png";
+    import Modal from "../components/modal"; 
+    import ContactForm from "../components/ContactForm";
 
-    const avatars = Array(6).fill(logoAvatar); 
+    const avatars = [logo1, logo2, logo3, logo4, logo5, logo6, logo7, logo8];
 
     function Home() {
     const backgroundRef = useRef(null);
+    const [isContactOpen, setContactOpen] = useState(false);
+
 
     function FAQItem({ question, answer }) {
     const [open, setOpen] = React.useState(false);
@@ -45,7 +56,7 @@
         scale: 1.0,
         scaleMobile: 1.0,
         color: 0x7d99ef,
-        backgroundColor: 0x0a0a23,
+        backgroundColor: 0x40426,
         points: 10.0,
         maxDistance: 20.0,
         spacing: 20.0,
@@ -82,6 +93,13 @@
 
     return (
         <div>
+            <Modal isOpen={isContactOpen} onClose={() => setContactOpen(false)}>
+            <ContactForm onSubmit={(data) => {
+                console.log("Contact form submitted:", data);
+                setContactOpen(false);
+            }} />
+            </Modal>
+
         {/* NAVBAR */}
         <nav
             className="navbar navbar-expand-lg navbar-dark bg-transparent px-4"
@@ -104,6 +122,11 @@
             </button>
             <div className="collapse navbar-collapse" id="navbarNav">
                 <ul className="navbar-nav mx-auto gap-4">
+                <li className="nav-item nav-hover">
+                    <a className="nav-link text-white" href="#about">
+                    About
+                    </a>
+                </li>
                 <li className="nav-item nav-hover dropdown">
             <a className="nav-link text-white underline-hover" href="#">
                 Features
@@ -157,37 +180,38 @@
                 </div>
                 <div className="mega-footer">
                     <a
-                    href="#integrations"
-                    className="learn-btn"
-                    onClick={(e) => {
-                        e.preventDefault();
-                        document.querySelector("#integrations")?.scrollIntoView({ behavior: "smooth" });
-                        document.querySelector(".mega-menu").style.opacity = 0;
-                        document.querySelector(".mega-menu").style.visibility = "hidden";
-                    }}
-                    >
-                    Learn More
+                        href="#integrations"
+                        className="learn-btn"
+                        onClick={(e) => {
+                            e.preventDefault();
+                            const megaMenu = document.querySelector(".mega-menu");
+                            megaMenu.classList.remove("active");
+                            setTimeout(() => {
+                            const target = document.querySelector("#integrations");
+                            if (target) {
+                                target.scrollIntoView({ behavior: "smooth" });
+                            }
+                            }, 50);
+                        }}
+                        >
+                        Learn More
                     </a>
                 </div>
                 </div>
             </div>
             </li>
-
                 <li className="nav-item nav-hover">
                     <a className="nav-link text-white" href="#pricing">
                     Pricing
                     </a>
                 </li>
-                <li className="nav-item nav-hover">
-                    <a className="nav-link text-white" href="#about">
-                    About
-                    </a>
-                </li>
                 </ul>
                 <div className="d-flex gap-2">
-                <button className="btn btn-outline-primary">Contact Us</button>
+                <button className="btn-outline-primary" onClick={() => setContactOpen(true)}>
+                    Contact Us
+                </button>
                 <Link to="/Signup">
-                    <button className="btn btn-primary">Sign Up</button>
+                    <button className="btn-primary">Sign Up</button>
                 </Link>
                 </div>
             </div>
@@ -200,7 +224,7 @@
             <h5>INTRODUCING</h5>
             <h1>CodeVault</h1>
             <p>Where student ideas compile.</p>
-            <div className="d-flex justify-content-center gap-3 mt-3">
+            <div className="d-flex justify-content-center gap-3 mt-3 navbar-buttons">
                 <Link to="/Signup">
                 <button className="btn btn-outline-primary">Try it now</button>
                 </Link>
@@ -235,7 +259,7 @@
                 className="avatar-img"
                 loading="lazy" 
                 />
-            ))}
+            ))} 
             </div>
         </div>
 
@@ -252,7 +276,7 @@
         </div>
 
         {/* INTEGRATIONS / CONNECT SECTION */}
-        <section id="integrations" className="integrations-section text-white text-center fade-section">
+        <section id="about" className="integrations-section text-white text-center fade-section">
         <div className="integration-grid">
 
             {/* LEFT HEADER TEXT */}
@@ -305,7 +329,7 @@
         </section>
 
         {/* FEATURES */}
-        <div className="features-wrapper">
+        <div className="features-wrapper" id="integrations">
             {/* 1st Section - Image Right */}
             <div className="feature-section fade-section">
             <div className="feature-text">
@@ -373,6 +397,19 @@
             </div>
         </div>
 
+        {/*QUOTE*/}
+        <div className="testimonial-card fade-section">
+        <span className="quote-mark">“</span>
+        <p className="testimonial-text">
+            Our developer team is ecstatic about working with Builder. They’re far
+            and away the best vendor that we work with in terms of customer service,
+            development processes, and documentation.
+        </p>
+        <p className="testimonial-author">
+            <strong>Colin Tracy</strong>, Director of Engineering at Black Rifle Coffee
+        </p>
+        </div>
+
         {/* PRICING */}
         <div className="pricing-section text-center text-white fade-section" id="pricing">
             <h6 className="pricing-label">PRICING</h6>
@@ -419,7 +456,7 @@
                 </li>
                 </ul>
                 <Link to="/Signup">
-                <button className="pricing-btn premium-btn">Upgrade Now</button>
+                <button className="pricing-btn premium-btn">     Now</button>
                 </Link>
             </div>
             </div>
@@ -458,21 +495,8 @@
         </div>
         </section>
 
-        {/*QUOTE*/}
-        <div className="testimonial-card fade-section">
-        <span className="quote-mark">“</span>
-        <p className="testimonial-text">
-            Our developer team is ecstatic about working with Builder. They’re far
-            and away the best vendor that we work with in terms of customer service,
-            development processes, and documentation.
-        </p>
-        <p className="testimonial-author">
-            <strong>Colin Tracy</strong>, Director of Engineering at Black Rifle Coffee
-        </p>
-        </div>
-
         {/* GET STARTED TODAY */}
-        <div className="get-started-section text-white text-center fade-section" id="about">
+        <div className="get-started-section text-white text-center fade-section">
             <h1 className="section-title">Get started today</h1>
 
             <div className="get-started-grid">

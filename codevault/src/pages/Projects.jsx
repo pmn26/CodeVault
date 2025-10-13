@@ -9,7 +9,7 @@ function Projects() {
     <div className="projects-page">
       {/* ================= HEADER ================= */}
       <div className="projects-header">
-        <h2>My Projects</h2>
+        <h2>All Projects</h2>
         <div className="projects-controls">
           <button className="upload-btn">Upload</button>
           <FaEllipsisV className="menu-icon" />

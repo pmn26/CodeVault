@@ -9,9 +9,9 @@ function FoldersPage() {
   return (
     <div className="folders-page">
       <div className="folders-header">
-        <h2>My Folders</h2>
+        <h2>My Projects</h2>
         <div className="folders-controls">
-          <button className="create-btn">Create</button>
+          <button className="create-btn">New</button>
           <FaEllipsisV className="menu-icon" />
         </div>
       </div>

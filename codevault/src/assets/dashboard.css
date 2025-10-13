@@ -48,6 +48,8 @@ html, body, .app-container {
   color: white;
   z-index: 1100;
   transition: transform 0.3s ease-in-out;
+  background-image: url('../assets/topbarbg.png') !important;
+  background-size: cover !important;
 }
 
 .top-nav.hidden {
@@ -375,4 +377,81 @@ html, body, .app-container {
   color: #ADB8CD !important;
   fill: #ADB8CD !important;
   stroke: #ADB8CD !important;
+}
+
+@media (max-width: 768px) {
+  .sidebar.desktop-only {
+    display: none;
+  }
+
+  .mobile-drawer {
+    position: fixed;
+    top: 70px; /* below top nav */
+    left: 0;
+    width: 220px;
+    height: calc(100% - 70px);
+    background: #04042B;
+    z-index: 1200;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    box-shadow: 2px 0 8px rgba(0,0,0,0.3);
+  }
+
+  .mobile-drawer .nav-buttons button {
+    width: 100%;
+    font-size: 14px;
+    padding: 10px;
+  }
+
+  .mobile-menu-btn {
+    display: inline-block;
+    font-size: 22px;
+    margin-left: 10px;
+    cursor: pointer;
+  }
+}
+
+.mobile-dropdown-menu {
+  position: absolute;
+  top: 70px; /* Just below top nav */
+  left: 0;
+  right: 0;
+  background-color: #04042B;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  z-index: 1200;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+}
+
+.mobile-dropdown-menu button {
+  background: white;
+  border: 2px solid #04042B;
+  border-radius: 10px;
+  padding: 12px;
+  font-weight: bold;
+  font-size: 16px;
+  color: #04042B;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.mobile-dropdown-menu button:hover,
+.mobile-dropdown-menu button.active {
+  background-color: #ADB8CD;
+  color: white;
+  border-color: #ADB8CD;
+}
+
+
+/* Hide burger on desktop */
+@media (min-width: 769px) {
+  .mobile-menu-btn,
+  .mobile-drawer {
+    display: none;
+  }
 }

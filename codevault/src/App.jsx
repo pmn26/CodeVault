@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { ChakraProvider } from "@chakra-ui/react";
 import theme from "./theme.js";
 
-import Home from "./pages/Home";
+import Home from "./pages/LandingPage.jsx";
 import Signup from "./pages/Signup.jsx";
 import Login from "./pages/Login.jsx";
 import MainPage from "./pages/MainPage";
@@ -12,7 +12,9 @@ import DashboardLayout from "./components/DashboardLayout.jsx";
 import FoldersPage from "./pages/Folders.jsx";
 import Projects from "./pages/Projects";
 import UserProfile from "./pages/UserProfile.jsx";
-import Settings from "./pages/Settings.jsx";  // ✅ Added Settings page
+import Settings from "./pages/Settings.jsx";
+import Billing from "./pages/Billing.jsx";
+import Review from "./pages/Review.jsx";
 
 function App() {
   return (
@@ -20,6 +22,8 @@ function App() {
       <Routes>
         {/* Public Routes */}
         <Route path="/" element={<Home />} />
+        <Route path="/billing" element={<Billing />} />
+        <Route path="/review" element={<Review />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/login" element={<Login />} />
 
