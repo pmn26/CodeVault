@@ -120,7 +120,7 @@ return (
                 <button className="profile-item" onClick={() => navigate("/settings")}>
                     <FaCog className="profile-icon" /> Settings
                 </button>
-                <button className="profile-item logout" onClick={() => navigate("/login")}>
+                <button className="profile-item logout" onClick={() => navigate("/")}>
                     <FaSignOutAlt className="profile-icon" /> Logout
                 </button>
                 </div>
@@ -134,10 +134,6 @@ return (
 {isMobile && (
 <div className="top-nav">
     <div className="nav-left">
-    <FaBars
-        className="menu-icon"
-        onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-    />
     <img src={logo} alt="CodeVault" className="logo-img" />
     </div>
 
@@ -179,32 +175,39 @@ return (
             </div>
         )}
         </div>
-
-        {/* Profile */}
-        <div className="profile-wrapper" ref={profileRef}>
-        <FaUserCircle className="icon-btn" onClick={toggleProfileDropdown} />
-        {showProfileDropdown && (
-            <div className="profile-dropdown">
-            <button className="profile-item" onClick={() => navigate("/settings")}>
-                <FaCog className="profile-icon" /> Settings
-            </button>
-            <button className="profile-item logout" onClick={() => navigate("/login")}>
-                <FaSignOutAlt className="profile-icon" /> Logout
-            </button>
-            </div>
-        )}
-        </div>
     </div>
     </div>
 
     {/* Mobile Dropdown Menu */}
     {mobileMenuOpen && (
     <div className="mobile-dropdown-menu">
-        {sidebarContent /* Your sidebar buttons go here */}
+        {sidebarContent}
     </div>
     )}
 </div>
 )}
+
+{isMobile && (
+  <div className="bottom-nav">
+    <Link to="/mainpage" className={`bottom-nav-item ${location.pathname === "/mainpage" ? "active" : ""}`}>
+      <span className="material-icons">home</span>
+      <p>Home</p>
+    </Link>
+    <Link to="/code-editor" className={`bottom-nav-item ${location.pathname === "/code-editor" ? "active" : ""}`}>
+      <span className="material-icons">code</span>
+      <p>Compiler</p>
+    </Link>
+    <Link to="/folders" className={`bottom-nav-item ${location.pathname === "/folders" ? "active" : ""}`}>
+      <span className="material-icons">folder</span>
+      <p>My Projects</p>
+    </Link>
+    <Link to="/projects" className={`bottom-nav-item ${location.pathname === "/projects" ? "active" : ""}`}>
+      <span className="material-icons">apps</span>
+      <p>All Projects</p>
+    </Link>
+  </div>
+)}
+
 
 
     <div className={`main-content ${!isMobile && "shifted"}`}>

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const CreateFolder = ({ onSubmit, onCancel }) => {
+function CreateFolder({ onSubmit }) {
   const [folderName, setFolderName] = useState("");
 
   const handleSubmit = (e) => {
@@ -10,23 +10,21 @@ const CreateFolder = ({ onSubmit, onCancel }) => {
   };
 
   return (
-    <form className="modal-content" onSubmit={handleSubmit}>
-      <div className="modal-header">Create Folder</div>
-      <div className="modal-body">
+    <div className="popup-box">
+      <h3>Create New Folder</h3>
+      <form onSubmit={handleSubmit}>
         <input
           type="text"
-          placeholder="Folder name"
+          placeholder="Enter folder name"
           value={folderName}
           onChange={(e) => setFolderName(e.target.value)}
-          required
         />
-      </div>
-      <div className="modal-footer">
-        <button type="button" className="cancel-btn" onClick={onCancel}>Cancel</button>
-        <button type="submit" className="action-btn">Create</button>
-      </div>
-    </form>
+        <button type="submit" className="create-folder-btn">
+          Create Folder
+        </button>
+      </form>
+    </div>
   );
-};
+}
 
 export default CreateFolder;

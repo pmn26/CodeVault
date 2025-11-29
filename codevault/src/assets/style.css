@@ -1265,15 +1265,15 @@ html, body {
 }
 
 .newsletter-button {
-    background-color: #4ea8ff; /* keep your blue */
+    background-color: #4ea8ff; 
     color: white;
     border: none;
-    font-size: 18px; /* slightly smaller for better fit */
-    width: 42px;      /* ensures perfect circle */
-    height: 42px;     /* ensures perfect circle */
+    font-size: 18px; 
+    width: 42px;      
+    height: 42px;     
     border-radius: 50%; 
     cursor: pointer;
-    display: flex;          /* center the icon/text */
+    display: flex;          
     justify-content: center; 
     align-items: center;
     transition: background 0.3s ease, transform 0.2s ease;
@@ -1377,6 +1377,7 @@ html, body {
   display: flex;
   flex-direction: column;
   gap: 15px;
+  color: white !important;
 }
 
 .contact-form h3 {
@@ -1386,11 +1387,15 @@ html, body {
   text-align: center;
 }
 
+.colorwhite {
+    color: white !important;
+}
+
 .contact-form label {
   display: flex;
   flex-direction: column;
   font-size: 14px;
-  color: #333;
+  color: #ffffff;
 }
 
 .contact-form input,
@@ -1418,3 +1423,7 @@ html, body {
 .submit-btn:hover {
   background: #1765c1;
 }
+
+
+
+

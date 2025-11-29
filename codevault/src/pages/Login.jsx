@@ -27,7 +27,7 @@ const handleGoogleLogin = async () => {
     const result = await signInWithPopup(auth, provider);
     const user = result.user;
     console.log("✅ Google user:", user);
-    navigate("/MainPage");
+    window.open("/MainPage", "_blank");
     } catch (error) {
     console.error("❌ Google Sign-In Error:", error);
     }
@@ -36,7 +36,7 @@ const handleGoogleLogin = async () => {
 const handleLogin = () => {
     if (allValid) {
     console.log("Logging in with", { email, password });
-    navigate("/MainPage");
+    window.open("/MainPage", "_blank");
     }
 };
 

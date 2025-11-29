@@ -12,9 +12,10 @@ import DashboardLayout from "./components/DashboardLayout.jsx";
 import FoldersPage from "./pages/Folders.jsx";
 import Projects from "./pages/Projects";
 import UserProfile from "./pages/UserProfile.jsx";
-import Settings from "./pages/Settings.jsx";
+import Settings from "./pages/settings.jsx";
 import Billing from "./pages/Billing.jsx";
 import Review from "./pages/Review.jsx";
+import FolderContent from "./pages/FolderContent.jsx";
 
 function App() {
   return (
@@ -39,9 +40,10 @@ function App() {
             }
           />
           <Route path="/folders" element={<FoldersPage />} />
+          <Route path="/folders/:name" element={<FolderContent />} /> 
           <Route path="/projects" element={<Projects />} />
           <Route path="/userprofile" element={<UserProfile />} />
-          <Route path="/settings" element={<Settings />} /> {/* ✅ Added here */}
+          <Route path="/settings" element={<Settings />} /> 
         </Route>
       </Routes>
     </Router>

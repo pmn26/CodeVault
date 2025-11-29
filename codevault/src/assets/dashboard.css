@@ -28,12 +28,7 @@ html, body, .app-container {
   transition: all 0.3s ease-in-out;
 }
 
-.top-nav:not(.hidden) ~ .main-content {
-  top: 70px;
-  height: calc(100vh - 70px);
-}
-
-/* TOP NAVIGATION BAR */
+/* ✅ FIXED TOP NAV STYLE */
 .top-nav {
   position: fixed;
   top: 0;
@@ -43,19 +38,48 @@ html, body, .app-container {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background-color: #04042B;
   padding: 0 20px;
   color: white;
   z-index: 1100;
   transition: transform 0.3s ease-in-out;
+
+  /* main dark background */
+  background-color: #04042B !important;
+
+  /* fallback glowing blue gradient */
+  background: linear-gradient(90deg, #04042B 0%, #0A0A5B 100%) !important;
+
+  /* optional background image (comment out if you don’t want it) */
   background-image: url('../assets/topbarbg.png') !important;
   background-size: cover !important;
+  background-repeat: no-repeat !important;
+  background-position: center !important;
+
+  box-shadow: 0 2px 10px rgba(0, 100, 255, 0.25);
+  backdrop-filter: blur(6px);
 }
 
 .top-nav.hidden {
   transform: translateY(-100%);
 }
 
+.top-nav * {
+  color: white !important;
+  fill: white !important;
+  stroke: white !important;
+}
+
+/* Responsive fix for smaller screens */
+@media (max-width: 768px) {
+  .top-nav {
+    padding: 0 10px;
+    height: 60px;
+    background: linear-gradient(90deg, #04042B 0%, #0D0D6A 100%) !important;
+    background-image: none !important;
+  }
+}
+
+/* Top nav layout */
 .nav-left, .nav-center, .nav-right {
   display: flex;
   align-items: center;
@@ -99,7 +123,7 @@ html, body, .app-container {
   color: #ADB8CD;
 }
 
-/* SEARCH BAR */
+/* Search Bar */
 .search-container {
   display: flex;
   align-items: center;
@@ -125,7 +149,7 @@ html, body, .app-container {
   color: #888;
 }
 
-/* SIDEBAR */
+/* Sidebar */
 .sidebar {
   position: fixed;
   top: 0;
@@ -172,26 +196,25 @@ html, body, .app-container {
   width: auto;
 }
 
-/* SIDEBAR BUTTONS */
 .nav-buttons {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;  /* Centers vertically */
+  justify-content: center;
   flex-grow: 1;
-  gap: 15px; /* Keeps consistent spacing */
+  gap: 15px;
 }
 
 .nav-buttons button {
   background: white;
   border: 2px solid #04042B;
   border-radius: 10px;
-  padding: 15px; /* Keeps original button size */
+  padding: 15px;
   font-weight: bold;
   font-size: 16px;
   color: #04042B;
   cursor: pointer;
-  width: 200px; /* ✅ Set a fixed width to keep button size consistent */
+  width: 200px;
   transition: all 0.2s ease-in-out;
 }
 
@@ -201,7 +224,6 @@ html, body, .app-container {
   color: white;
   border-color: #ADB8CD;
 }
-
 
 .sidebar-bottom button {
   background: none;
@@ -216,33 +238,7 @@ html, body, .app-container {
   color: #ADB8CD;
 }
 
-/* RESPONSIVE */
-@media (max-width: 768px) {
-  .sidebar {
-    width: 200px;
-  }
-
-  .top-nav {
-    padding: 0 10px;
-  }
-
-  .search-container {
-    max-width: 200px;
-  }
-}
-
-/* ENSURE ICON COLORS STAY WHITE */
-.top-nav button,
-.top-nav .menu-icon,
-.top-nav .sidebar-toggle,
-.top-nav svg,
-.top-nav i {
-  color: white !important;
-  fill: white !important;
-  stroke: white !important;
-}
-
-/* NOTIFICATION DROPDOWN */
+/* Notification dropdown */
 .notification-wrapper {
   position: relative;
 }
@@ -251,13 +247,16 @@ html, body, .app-container {
   position: absolute;
   top: 40px;
   right: 0;
-  width: 350px;
+  width: 360px;
   background: white;
   color: #04042B;
   border-radius: 10px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   padding: 15px;
   z-index: 1200;
+  overflow-x: hidden;
+  overflow-y: auto;
+  max-height: 400px;
 }
 
 .notification-dropdown h4 {
@@ -269,13 +268,16 @@ html, body, .app-container {
 
 .notification-tabs {
   display: flex;
-  justify-content: space-around;
-  margin-bottom: 15px;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
   border-bottom: 1px solid #ddd;
   padding-bottom: 8px;
 }
 
 .notification-tabs button {
+  flex: 1;
   background: none !important;
   border: none !important;
   color: #04042B !important;
@@ -283,7 +285,10 @@ html, body, .app-container {
   cursor: pointer;
   font-size: 15px;
   transition: color 0.2s ease-in-out, border-bottom 0.2s;
-  padding-bottom: 5px;
+  padding: 6px;
+  border-bottom: 2px solid transparent;
+  text-align: center;
+  white-space: nowrap;
 }
 
 .notification-tabs button:hover {
@@ -303,22 +308,22 @@ html, body, .app-container {
   font-size: 14px;
 }
 
-/* PROFILE DROPDOWN */
+/* Profile dropdown */
 .profile-wrapper {
   position: relative;
 }
 
 .profile-dropdown {
   position: absolute;
-  top: 40px;
+  bottom: 50px;
   right: 0;
-  width: 190px;
+  width: 180px;
   background: #04042B;
   color: white;
   border-radius: 10px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-  padding: 10px 0;
-  z-index: 1200;
+  padding: 8px 0;
+  z-index: 1300;
   animation: fadeDown 0.15s ease-out;
 }
 
@@ -326,7 +331,7 @@ html, body, .app-container {
   content: "";
   position: absolute;
   top: -8px;
-  right: 15px;
+  right: 20px;
   border-width: 0 8px 8px 8px;
   border-style: solid;
   border-color: transparent transparent #04042B transparent;
@@ -357,7 +362,6 @@ html, body, .app-container {
   font-size: 16px;
 }
 
-/* DROPDOWN ANIMATION */
 @keyframes fadeDown {
   from {
     opacity: 0;
@@ -369,24 +373,27 @@ html, body, .app-container {
   }
 }
 
-/* TOP NAV HOVER COLORS */
-.top-nav button:hover,
-.top-nav .menu-icon:hover,
-.top-nav svg:hover,
-.top-nav i:hover {
-  color: #ADB8CD !important;
-  fill: #ADB8CD !important;
-  stroke: #ADB8CD !important;
-}
-
+/* Mobile responsiveness */
 @media (max-width: 768px) {
+  .sidebar {
+    width: 200px;
+  }
+
+  .top-nav {
+    padding: 0 10px;
+  }
+
+  .search-container {
+    max-width: 200px;
+  }
+
   .sidebar.desktop-only {
     display: none;
   }
 
   .mobile-drawer {
     position: fixed;
-    top: 70px; /* below top nav */
+    top: 70px;
     left: 0;
     width: 220px;
     height: calc(100% - 70px);
@@ -415,7 +422,7 @@ html, body, .app-container {
 
 .mobile-dropdown-menu {
   position: absolute;
-  top: 70px; /* Just below top nav */
+  top: 70px;
   left: 0;
   right: 0;
   background-color: #04042B;
@@ -447,8 +454,51 @@ html, body, .app-container {
   border-color: #ADB8CD;
 }
 
+/* ✅ Mobile Bottom Navigation */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  background: linear-gradient(90deg, #04042B 0%, #0D0D6A 100%);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  z-index: 1500;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.3);
+}
 
-/* Hide burger on desktop */
+.bottom-nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #ADB8CD;
+  text-decoration: none;
+  font-size: 12px;
+  transition: all 0.2s ease-in-out;
+}
+
+.bottom-nav-item .material-icons {
+  font-size: 24px;
+  margin-bottom: 2px;
+}
+
+.bottom-nav-item.active,
+.bottom-nav-item:hover {
+  color: white;
+  transform: scale(1.05);
+}
+
+/* Prevent content overlap with bottom nav */
+@media (max-width: 768px) {
+  .main-content {
+    padding-bottom: 70px;
+  }
+}
+
+
 @media (min-width: 769px) {
   .mobile-menu-btn,
   .mobile-drawer {

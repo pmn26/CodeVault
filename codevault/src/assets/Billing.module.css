@@ -1,4 +1,4 @@
-.container {
+.container {  
   min-height: 100vh;
   display: flex;
   justify-content: center;
@@ -17,6 +17,8 @@
   width: 100%;
   text-align: center;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  color: #04042B;
+  font-family: Poppins, sans-serif;
 }
 
 .plans {
@@ -31,6 +33,8 @@
   border-radius: 8px;
   padding: 20px;
   position: relative;
+  color: #04042B;
+  background-color: #f9f9ff;
 }
 
 .most-popular {
@@ -46,28 +50,34 @@
   font-size: 12px;
   padding: 2px 8px;
   border-radius: 4px;
-  font-family: poppins, sans-serif;
+  font-family: Poppins, sans-serif;
 }
 
 h3 {
   margin: 10px 0;
+  color: #04042B;
 }
 
 .price {
   font-weight: bold;
+  color: #2b2b60;
 }
 
-button {
+.card button {
   margin-top: 10px;
-  padding: 10px 20px;
-  background-color: #7D99EF;
-  color: #fff;
-  border: none;
-  border-radius: 6px;
+  padding: 12px 20px;
+  background-color: #343B63 !important;
+  color: #ffffff !important;
+  border: none !important;
+  border-radius: 6px !important;
+  font-weight: 600 !important;
+  font-family: Poppins, sans-serif !important;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  display: inline-block;
 }
 
-button:hover {
-  background-color: #414d71;
+.card button:hover {
+  background-color: #2b3155 !important; 
+  transform: scale(1.02);
 }

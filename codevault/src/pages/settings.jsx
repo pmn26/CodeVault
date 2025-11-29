@@ -1,8 +1,159 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import "../assets/settings.css";
 
 function Settings() {
   const [activeSection, setActiveSection] = useState("account");
+  const [feedbackMessage, setFeedbackMessage] = useState("");
+  const [status, setStatus] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [accountStatus, setAccountStatus] = useState("");
+
+  const [loggedUser, setLoggedUser] = useState({ email: "", password: "" });
+  const [showPassword, setShowPassword] = useState(false);
+
+  const navigate = useNavigate();
+
+  const readUserFromStorage = () => {
+    try {
+      const possibleKeys = [
+        "userEmail",
+        "userPassword",
+        "email",
+        "password",
+        "loggedEmail",
+        "loggedPassword",
+        "user",
+        "authUser",
+        "currentUser",
+      ];
+
+      for (const key of ["user", "authUser", "currentUser"]) {
+        const raw = localStorage.getItem(key) || sessionStorage.getItem(key);
+        if (raw) {
+          try {
+            const parsed = JSON.parse(raw);
+            if (parsed && (parsed.email || parsed.password)) {
+              console.log("Settings: found parsed user from key:", key, parsed);
+              return {
+                email: parsed.email || "",
+                password: parsed.password || "",
+              };
+            }
+          } catch (e) {}
+        }
+      }
+
+      let foundEmail = "";
+      let foundPassword = "";
+      for (const key of possibleKeys) {
+        const valLocal = localStorage.getItem(key);
+        const valSession = sessionStorage.getItem(key);
+        const val = valLocal ?? valSession;
+        if (!val) continue;
+
+        if (key.toLowerCase().includes("email") || val.includes("@")) {
+          if (!foundEmail) foundEmail = val;
+        } else if (key.toLowerCase().includes("password")) {
+          if (!foundPassword) foundPassword = val;
+        } else if (!foundEmail && val.includes("@")) {
+          foundEmail = val;
+        }
+      }
+
+      return { email: foundEmail, password: foundPassword };
+    } catch (err) {
+      console.error("Settings: error reading storage", err);
+      return { email: "", password: "" };
+    }
+  };
+
+  useEffect(() => {
+    const u = readUserFromStorage();
+    console.log("Settings: readUserFromStorage ->", u);
+    if (u.email || u.password) setLoggedUser(u);
+
+    const onStorage = (e) => {
+      if (!e) return;
+      console.log("Settings: storage event", e.key, e.newValue);
+      const updated = readUserFromStorage();
+      setLoggedUser(updated);
+    };
+    window.addEventListener("storage", onStorage);
+    return () => window.removeEventListener("storage", onStorage);
+  }, []);
+
+  const handleAccountSubmit = async (e) => {
+    e.preventDefault();
+    setAccountStatus("Saving...");
+    setLoading(true);
+
+    const data = {
+      data: [
+        {
+          username: username,
+          email: email,
+          password: password,
+        },
+      ],
+    };
+
+    try {
+      const res = await fetch("https://sheetdb.io/api/v1/xdx46pt340y4f", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+
+      if (res.ok) {
+        setAccountStatus("✅ Account details saved successfully!");
+        setUsername("");
+        setEmail("");
+        setPassword("");
+      } else {
+        setAccountStatus("❌ Failed to save account details. Try again.");
+      }
+    } catch (error) {
+      console.error("⚠️ Error saving account:", error);
+      setAccountStatus("⚠️ Something went wrong. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleFeedbackSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setStatus("");
+
+    const data = {
+      data: [{ message: feedbackMessage }],
+    };
+
+    try {
+      const res = await fetch("https://sheetdb.io/api/v1/cm9mq6bl5i784", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+
+      if (res.ok) {
+        setStatus("✅ Message sent successfully!");
+        setFeedbackMessage("");
+      } else {
+        setStatus("❌ Failed to send message. Please try again.");
+      }
+    } catch (error) {
+      console.error("⚠️ Error sending feedback:", error);
+      setStatus("⚠️ Something went wrong. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const renderContent = () => {
     switch (activeSection) {
@@ -11,20 +162,75 @@ function Settings() {
           <div className="settings-section">
             <h2>Account Management</h2>
             <p>Update your username, email address, or password.</p>
-            <form className="settings-form">
+
+            {(loggedUser.email || loggedUser.password) && (
+              <div className="user-info-box">
+                <p>
+                  <strong>Logged in Email:</strong>{" "}
+                  {loggedUser.email || <em>Not available</em>}
+                </p>
+                <p>
+                  <strong>Password:</strong>{" "}
+                  {loggedUser.password ? (
+                    <>
+                      <span className="masked-password">
+                        {showPassword ? loggedUser.password : "••••••••"}
+                      </span>
+                      <button
+                        type="button"
+                        className="password-toggle"
+                        onClick={() => setShowPassword((s) => !s)}
+                        aria-label={showPassword ? "Hide password" : "Show password"}
+                      >
+                        {showPassword ? "Hide" : "Show"}
+                      </button>
+                    </>
+                  ) : (
+                    <em>Not available</em>
+                  )}
+                </p>
+                <p style={{ marginTop: 8, fontSize: "0.85rem", color: "#4b4b8a" }}>
+                  Tip: If the info isn't showing, your login/signup might not be saving
+                  credentials to localStorage/sessionStorage. Check the console (F12).
+                </p>
+              </div>
+            )}
+
+            <form className="settings-form" onSubmit={handleAccountSubmit}>
               <label>
                 Username:
-                <input type="text" placeholder="Enter new username" />
+                <input
+                  type="text"
+                  placeholder="Enter new username"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  required
+                />
               </label>
               <label>
                 Email:
-                <input type="email" placeholder="Enter new email" />
+                <input
+                  type="email"
+                  placeholder="Enter new email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                />
               </label>
               <label>
                 Password:
-                <input type="password" placeholder="Enter new password" />
+                <input
+                  type="password"
+                  placeholder="Enter new password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                />
               </label>
-              <button type="button">Save Changes</button>
+              <button type="submit" disabled={loading}>
+                {loading ? "Saving..." : "Save Changes"}
+              </button>
+              {accountStatus && <p className="status-message">{accountStatus}</p>}
             </form>
           </div>
         );
@@ -33,12 +239,21 @@ function Settings() {
         return (
           <div className="settings-section">
             <h2>Subscription & Billing</h2>
-            <p>Manage your current plan, billing information, and invoices.</p>
+            <p>Manage your current plan and upgrade to premium.</p>
             <div className="subscription-info">
-              <p><strong>Current Plan:</strong> Free Plan</p>
-              <p><strong>Next Billing Date:</strong> N/A</p>
-              <button>Upgrade Plan</button>
-              <button>View Billing History</button>
+              <p>
+                <strong>Current Plan:</strong> Free Plan
+              </p>
+              <p>
+                <strong>Next Billing Date:</strong> N/A
+              </p>
+              <button
+                type="button"
+                className="uniform-btn"
+                onClick={() => navigate("/billing")}
+              >
+                Upgrade Plan
+              </button>
             </div>
           </div>
         );
@@ -58,7 +273,9 @@ function Settings() {
               <label>
                 <input type="checkbox" /> Receive security alerts
               </label>
-              <button type="button">Save Preferences</button>
+              <button type="button" className="uniform-btn">
+                Save Preferences
+              </button>
             </form>
           </div>
         );
@@ -67,13 +284,22 @@ function Settings() {
         return (
           <div className="settings-section">
             <h2>Support & Feedback</h2>
-            <p>Need help? Contact us or send feedback about your experience.</p>
-            <form className="settings-form">
+            <p>Need help? Send us your message or feedback.</p>
+            <form className="settings-form" onSubmit={handleFeedbackSubmit}>
               <label>
                 Message:
-                <textarea placeholder="Describe your issue or feedback..." rows="4" />
+                <textarea
+                  placeholder="Describe your issue or feedback..."
+                  rows="4"
+                  value={feedbackMessage}
+                  onChange={(e) => setFeedbackMessage(e.target.value)}
+                  required
+                />
               </label>
-              <button type="button">Send Message</button>
+              <button type="submit" disabled={loading} className="uniform-btn">
+                {loading ? "Sending..." : "Send Message"}
+              </button>
+              {status && <p className="status-message">{status}</p>}
             </form>
           </div>
         );

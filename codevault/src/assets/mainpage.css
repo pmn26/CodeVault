@@ -1,67 +1,87 @@
-.main-page {
-  background-color: #f8f9fc;
-  padding: 40px 50px;
-  min-height: 100vh;
-  overflow-y: auto;
-  font-family: 'Poppins', sans-serif;
+:root {
+  --dark-blue: #010120;
+  --medium-blue: #1b1b63;
+  --light-blue: #4d5baa;
+  --accent-blue: #6f7dfb;
+  --text-color: #f5f5f5;
 }
 
-/* Upload Card */
+.main-page {
+  background-color: var(--dark-blue);
+  color: var(--text-color);
+  padding: 50px;
+  min-height: 100vh;
+  overflow-y: auto;
+  font-family: "Poppins", sans-serif;
+}
+
 .upload-card {
-  background-color: #04042b;
+  background: linear-gradient(145deg, var(--medium-blue), #25258a);
   color: white;
-  border-radius: 12px;
+  border-radius: 16px;
   padding: 40px;
   text-align: center;
-  margin-bottom: 25px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  margin-bottom: 40px;
+  box-shadow: 0 0 20px rgba(111, 125, 251, 0.6),
+              0 0 40px rgba(111, 125, 251, 0.2);
+  transition: all 0.3s ease;
+}
+
+.upload-card:hover {
+  box-shadow: 0 0 30px rgba(111, 125, 251, 0.9),
+              0 0 50px rgba(111, 125, 251, 0.4);
+  transform: translateY(-4px);
 }
 
 .upload-card h3 {
-  font-size: 24px;
+  font-size: 26px;
   font-weight: 600;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
+  color: white;
 }
 
 .upload-card p {
-  font-size: 14px;
-  opacity: 0.8;
-  margin-bottom: 20px;
+  font-size: 15px;
+  opacity: 0.9;
+  margin-bottom: 25px;
+  color: #d1d5ff;
 }
 
 .Main-Buttons {
-  background-color: #7787a9;
+  background-color: var(--light-blue);
   color: white;
   border: none;
-  padding: 12px 20px;
-  border-radius: 8px;
+  padding: 12px 24px;
+  border-radius: 10px;
   cursor: pointer;
   font-weight: 500;
   transition: all 0.3s ease;
 }
 
 .Main-Buttons:hover {
-  background-color: #4ea8ff;
-  transform: translateY(-2px);
+  background-color: var(--accent-blue);
+  transform: scale(1.05);
+  box-shadow: 0 0 12px rgba(111, 125, 251, 0.6);
 }
 
 .Main-Buttons.upgrade {
-  background-color: #6c757d;
+  background-color: var(--accent-blue);
+  font-weight: 600;
+  box-shadow: 0 0 20px rgba(111, 125, 251, 0.6);
 }
 
 .Main-Buttons.upgrade:hover {
-  background-color: #495057;
+  background-color: #8190ff;
+  box-shadow: 0 0 30px rgba(111, 125, 251, 0.8);
 }
 
-/* Folder Actions */
 .folder-actions {
   display: flex;
   justify-content: center;
   gap: 25px;
-  margin-bottom: 30px;
+  margin-bottom: 40px;
 }
 
-/* Content Section (folders + projects) */
 .content-section {
   display: flex;
   justify-content: space-between;
@@ -69,59 +89,187 @@
   gap: 30px;
 }
 
-/* Folders */
-.folders-area, .projects-area {
+.folders-area,
+.projects-area {
   flex: 1;
   min-width: 300px;
 }
 
-.folders-area h4, .projects-area h4 {
-  font-size: 18px;
+.folders-area h4,
+.projects-area h4 {
+  font-size: 20px;
   font-weight: 600;
-  color: #04042b;
-  margin-bottom: 15px;
+  color: var(--text-color);
+  margin-bottom: 20px;
 }
 
-.folder-grid, .project-grid {
+.folder-grid,
+.project-grid {
   display: flex;
   flex-wrap: wrap;
-  gap: 20px;
+  gap: 25px;
 }
 
-/* Folder cards */
 .folder-card {
-  background-color: #f0f3fa;
-  border-radius: 12px;
+  background-color: var(--medium-blue);
+  border-radius: 14px;
   padding: 25px;
   text-align: center;
-  width: 140px;
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.05);
-  transition: transform 0.2s ease;
+  width: 150px;
+  box-shadow: 0 5px 12px rgba(0, 0, 0, 0.25);
+  transition: all 0.25s ease;
+  cursor: pointer;
 }
 
 .folder-card:hover {
-  transform: translateY(-4px);
+  transform: translateY(-6px) scale(1.05);
+  background-color: #2a2a80;
+  box-shadow: 0 8px 20px rgba(111, 125, 251, 0.45);
 }
 
 .folder-card p {
-  margin-top: 8px;
-  font-size: 14px;
-  color: #333;
+  margin-top: 10px;
+  font-size: 15px;
+  color: var(--text-color);
 }
 
-/* Project cards */
+.folder-icon {
+  color: var(--accent-blue);
+  transition: 0.3s ease;
+}
+
+.folder-card:hover .folder-icon {
+  color: #a2b1ff;
+  filter: drop-shadow(0 0 6px rgba(111, 125, 251, 0.8));
+}
+
 .project-card {
-  background-color: #e6ecf7;
-  border-radius: 12px;
+  background-color: #0b0b38;
+  border-radius: 14px;
   padding: 25px;
   width: 160px;
   text-align: center;
   font-weight: 500;
-  color: #333;
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.05);
-  transition: transform 0.2s ease;
+  color: var(--text-color);
+  box-shadow: 0 5px 12px rgba(0, 0, 0, 0.25);
+  transition: all 0.25s ease;
 }
 
 .project-card:hover {
-  transform: translateY(-4px);
+  transform: translateY(-6px);
+  background-color: var(--medium-blue);
+  box-shadow: 0 8px 20px rgba(111, 125, 251, 0.4);
+}
+
+.modal-overlay {
+  background-color: rgba(0, 0, 0, 0.6); 
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: linear-gradient(145deg, var(--medium-blue), #101045);
+  color: var(--text-color);
+  padding: 40px 50px;
+  border-radius: 16px;
+  width: 350px;
+  box-shadow: 0 0 25px rgba(111, 125, 251, 0.6);
+  text-align: center;
+  position: relative;
+  animation: fadeIn 0.3s ease;
+}
+
+.modal-content h2 {
+  font-size: 22px;
+  margin-bottom: 20px;
+  font-weight: 600;
+  color: white;
+}
+
+.modal-content input {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 25px;
+  border: none;
+  border-radius: 10px;
+  outline: none;
+  background-color: #0b0b38;
+  color: white;
+  font-size: 15px;
+}
+
+.modal-content input::placeholder {
+  color: #b3b3ff;
+  opacity: 0.8;
+}
+
+.modal-content button {
+  background-color: var(--accent-blue);
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.modal-content button:hover {
+  background-color: #8190ff;
+  box-shadow: 0 0 15px rgba(111, 125, 251, 0.8);
+  transform: scale(1.03);
+}
+
+.modal-close {
+  position: absolute;
+  top: 12px;
+  right: 18px;
+  color: #c2c2ff;
+  font-size: 22px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.modal-close:hover {
+  color: white;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+
+
+@media (max-width: 768px) {
+  .main-page {
+    padding: 25px;
+  }
+
+  .upload-card {
+    padding: 25px;
+  }
+
+  .folder-actions {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .folder-card,
+  .project-card {
+    width: 100%;
+  }
 }

@@ -1,61 +1,33 @@
-import React, { useState, useRef } from "react";
+import React, { useState } from "react";
 
-const UploadFiles = ({ onUpload, onCancel }) => {
+function UploadFiles({ onUpload }) {
   const [file, setFile] = useState(null);
-  const [dragOver, setDragOver] = useState(false);
-  const inputRef = useRef();
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (file) {
-      onUpload(file);
-      setFile(null);
+    if (!file) {
+      alert("Please select a file to upload.");
+      return;
     }
-  };
-
-  const handleDrop = (e) => {
-    e.preventDefault();
-    setDragOver(false);
-    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      setFile(e.dataTransfer.files[0]);
-    }
-  };
-
-  const handleDragOver = (e) => {
-    e.preventDefault();
-    setDragOver(true);
-  };
-
-  const handleDragLeave = () => {
-    setDragOver(false);
+    onUpload(file);
+    setFile(null);
   };
 
   return (
-    <form className="modal-content" onSubmit={handleSubmit}>
-      <div className="modal-header">Upload File</div>
-      <div className="modal-body">
-        <div
-          className={`drop-zone ${dragOver ? "dragover" : ""}`}
-          onClick={() => inputRef.current.click()}
-          onDrop={handleDrop}
-          onDragOver={handleDragOver}
-          onDragLeave={handleDragLeave}
-        >
-          {file ? file.name : "Drag files here or click to select"}
-          <input
-            type="file"
-            ref={inputRef}
-            style={{ display: "none" }}
-            onChange={(e) => setFile(e.target.files[0])}
-          />
-        </div>
-      </div>
-      <div className="modal-footer">
-        <button type="button" className="cancel-btn" onClick={onCancel}>Cancel</button>
-        <button type="submit" className="action-btn" disabled={!file}>Upload</button>
-      </div>
-    </form>
+    <div className="popup-box">
+      <h3>Upload Files</h3>
+      <form onSubmit={handleSubmit}>
+        <input
+          type="file"
+          onChange={(e) => setFile(e.target.files[0])}
+          style={{ marginBottom: "15px", width: "100%" }}
+        />
+        <button type="submit" className="create-folder-btn">
+          Upload
+        </button>
+      </form>
+    </div>
   );
-};
+}
 
 export default UploadFiles;
