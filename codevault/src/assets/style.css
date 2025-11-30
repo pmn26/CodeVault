@@ -13,7 +13,7 @@ html, body {
 /* HOME */
 #background {
     position: relative;
-    height: auto !important;
+    height: 100vh !important;
     width: 100%;
     z-index: 0;
     padding-top: 80px;
@@ -90,7 +90,7 @@ html, body {
 #logo {
     display: flex;
     align-items: center;
-    height: 50px; /* Adjusted logo height */
+    height: 50px;
 }
 
 #tabs {
@@ -121,8 +121,8 @@ html, body {
 }
 
 .pricing-btn {
-    background-color: #0A0A23 !important; /* dark bg */
-    color: #7D99EF !important;           /* text blue */
+    background-color: #0A0A23 !important;
+    color: #7D99EF !important;
     border: 1px solid #7D99EF !important;
     padding: 0.75rem 1.5rem !important;
     border-radius: 0.5rem !important;
@@ -132,8 +132,8 @@ html, body {
 }
 
 .pricing-btn:hover {
-    background-color: #414d71 !important; /* dark blue hover */
-    color: white !important;               /* keep text white */
+    background-color: #414d71 !important;
+    color: white !important;
     transform: translateY(-2px);
 }
 
@@ -172,7 +172,7 @@ html, body {
 .d-flex a,
 .d-flex a:hover,
 .d-flex a:focus {
-    text-decoration: none; /* no underline */
+    text-decoration: none;
 }
 
 /* ---------- DROPDOWN ---------- */
@@ -184,7 +184,7 @@ html, body {
     position: absolute;
     top: 100%;
     left: 50%;
-    transform: translateX(-50%) translateY(0);
+    transform: translateX(-50%);
     width: 850px;
     background: rgba(15, 15, 30, 0.95);
     backdrop-filter: blur(20px);
@@ -274,26 +274,74 @@ html, body {
 }
 
 .learn-btn:hover {
-    color: #ffffff;
+    color: white;
 }
 
 .learn-btn:hover::after {
     transform: translateX(4px);
 }
 
-/* MOBILE DROPDOWN */
+/* ---------- MOBILE FIXES ---------- */
 @media (max-width: 991px) {
-    .mega-menu {
-        position: static;
-        transform: none;
-        flex-direction: column;
+
+    #container1 {
+        max-width: 100% !important;
+    }
+
+    .navbar-toggler {
+        width: auto !important;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+    }
+
+    /* Mobile Tabs */
+    #tabs {
+        display: none;
         width: 100%;
-        box-shadow: none;
+        flex-direction: column;
+        gap: 10px;
+        margin-top: 10px;
+        text-align: center;
         background: rgba(15, 15, 30, 0.95);
-        padding: 20px;
-        opacity: 1;
-        visibility: visible;
-        pointer-events: auto;
+        padding: 15px 0;
+        border-radius: 10px;
+    }
+
+    #tabs.show {
+        display: flex;
+    }
+
+    /* ---------- MOBILE DROPDOWN / MEGA MENU ---------- */
+    .mega-menu {
+        position: absolute !important;
+        top: 100% !important;
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+
+        width: 100% !important;
+        flex-direction: column !important;
+
+        background: rgba(15, 15, 30, 0.95) !important;
+        backdrop-filter: blur(20px) !important;
+        -webkit-backdrop-filter: blur(20px) !important;
+
+        border-radius: 12px !important;
+        padding: 20px !important;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3) !important;
+
+        display: none !important;
+        opacity: 0 !important;
+        visibility: hidden !important;
+        pointer-events: none !important;
+    }
+
+    /* When dropdown is opened */
+    .dropdown.show .mega-menu,
+    .nav-item.dropdown.open .mega-menu {
+        display: flex !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+        pointer-events: auto !important;
     }
 
     .mega-column {
@@ -306,6 +354,9 @@ html, body {
 }
 
 
+
+
+
 /* WELCOME SECTION */
 
 .Welcome {
@@ -313,7 +364,7 @@ html, body {
     position: relative;
     color: white;
     font-family: "Poppins", sans-serif;
-    margin-top: 5rem;
+    margin-top: 1rem;
     padding: 2rem;
     max-width: 1200px;
     width: 100%;
@@ -341,19 +392,17 @@ html, body {
     margin-bottom: 2rem;
 }
 
-/* Container for buttons */
 .navbar-buttons {
     display: flex;
-    gap: 1rem; /* spacing between buttons */
+    gap: 1rem;
     justify-content: center;
     align-items: center;
     margin-top: 1rem;
 }
 
-/* Try it now button (outline) */
 .navbar-buttons .btn-outline-primary {
-    background-color: #0A0A23; /* dark background */
-    color: #7D99EF; /* blue text */
+    background-color: #0A0A23;
+    color: #7D99EF;
     border: 1px solid #7D99EF;
     padding: 0.5rem 1.5rem;
     border-radius: 0.5rem;
@@ -363,7 +412,7 @@ html, body {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    text-decoration: none; /* removes underline */
+    text-decoration: none; 
     transition: all 0.3s ease;
 }
 
@@ -373,7 +422,6 @@ html, body {
     transform: translateY(-2px);
 }
 
-/* Get a demo button (primary) */
 .navbar-buttons .btn-primary {
     background-color: #7D99EF;
     color: white;
@@ -386,7 +434,7 @@ html, body {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    text-decoration: none; /* removes underline */
+    text-decoration: none; 
     transition: all 0.3s ease;
 }
 
@@ -700,7 +748,7 @@ html, body {
 
 /* PRICING */
 .pricing-section {
-    max-width: 1200px; /* wider to allow multiple cards side by side */
+    max-width: 1200px; 
     margin: 6rem auto;
     text-align: center;
     padding: 2rem 1rem;
@@ -726,7 +774,7 @@ html, body {
 }
 
 .pricing-card {
-    flex: 1 1 calc(33.333% - 2rem); /* 3 cards side by side */
+    flex: 1 1 calc(33.333% - 2rem);
     max-width: 320px; 
     background: rgba(255, 255, 255, 0.05);
     border-radius: 16px;
@@ -734,6 +782,9 @@ html, body {
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     border: 1px solid rgba(255, 255, 255, 0.1);
     box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
 }
 
 .pricing-card:hover {
@@ -1192,6 +1243,9 @@ html, body {
     transition: transform 0.3s, box-shadow 0.3s;
     flex: 1;
     min-width: 300px;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
 }
 
 .get-started-card:hover {

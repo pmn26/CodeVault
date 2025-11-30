@@ -18,12 +18,16 @@
         import allprojects from "../assets/AllProjects.png";    
         import Modal from "../components/modal"; 
         import ContactForm from "../components/ContactForm";
+        import 'bootstrap/dist/css/bootstrap.min.css';
+        import 'bootstrap/dist/js/bootstrap.bundle.min.js';
+
 
         const avatars = [logo1, logo2, logo3, logo4, logo5, logo6, logo7, logo8];
 
         function Home() {
         const backgroundRef = useRef(null);
         const [isContactOpen, setContactOpen] = useState(false);
+        const [isNavOpen, setNavOpen] = useState(false);
 
 
         function FAQItem({ question, answer }) {
@@ -109,118 +113,121 @@
                 style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 1030 }}
             >
                 <div className="container-fluid">
-                <a className="navbar-brand d-flex align-items-center" href="#">
-                    <img src={logo} alt="CodeVault Logo" id="logo" style={{ height: "50px" }} />
-                </a>
-                <button
-                    className="navbar-toggler"
-                    type="button"
-                    data-bs-toggle="collapse"
-                    data-bs-target="#navbarNav"
-                    aria-controls="navbarNav"
-                    aria-expanded="false"
-                    aria-label="Toggle navigation"
-                >
-                    <span className="navbar-toggler-icon"></span>
-                </button>
-                <div className="collapse navbar-collapse" id="navbarNav">
-                    <ul className="navbar-nav mx-auto gap-4">
-                    <li className="nav-item nav-hover dropdown">
-                <a className="nav-link text-white underline-hover" href="#">
-                    Features
-                </a>
+                    <a className="navbar-brand d-flex align-items-center" href="#">
+                        <img src={logo} alt="CodeVault Logo" id="logo" style={{ height: "50px" }} />
+                    </a>
 
-                <div className="mega-menu">
-                    <div className="mega-column">
-                    <h6>UPLOAD</h6>
-                    <div className="mega-item">
-                        <i className="bi bi-journal-text"></i>
-                        <div>
-                        <h5>Upload</h5>
-                        <p> Upload files, manage projects, and access them anywhere.</p>
-                        </div>
-                    </div>
-                    <div className="mega-item">
-                        <i className="bi bi-camera-video"></i>
-                        <div>
-                        <h5>Download</h5>
-                        <p>Download public snippets or full projects to study</p>
-                        </div>
-                    </div>
-                    </div>
-
-                    <div className="mega-column">
-                    <h6>CONNECT</h6>
-                    <div className="mega-item">
-                        <i className="bi bi-chat-dots"></i>
-                        <div>
-                        <h5>Explore</h5>
-                        <p>Discover code from developers around the world.
-                                                </p>
-                        </div>
-                    </div>
-                    <div className="mega-item">
-                        <i className="bi bi-people"></i>
-                        <div>
-                        <h5>Grow</h5>
-                        <p>Enhance your coding journey all within one platform.</p>
-                        </div>
-                    </div>
-                    </div>
-
-                    <div className="mega-column">
-                    <h6>CODE</h6>
-                    <div className="mega-item">
-                        <i className="bi bi-code"></i>
-                        <div>
-                        <h5>Built-in Compiler</h5>
-                        <p>Write, test, and debug directly in your browser.</p>
-                        </div>
-                    </div>
-                    <div className="mega-footer">
-                        <a
-                            href="#integrations"
-                            className="learn-btn"
-                            onClick={(e) => {
-                                e.preventDefault();
-                                const megaMenu = document.querySelector(".mega-menu");
-                                megaMenu.classList.remove("active");
-                                setTimeout(() => {
-                                const target = document.querySelector("#integrations");
-                                if (target) {
-                                    target.scrollIntoView({ behavior: "smooth" });
-                                }
-                                }, 50);
-                            }}
-                            >
-                            Learn More
-                        </a>
-                    </div>
-                    </div>
-                </div>
-                </li>
-                    <li className="nav-item nav-hover">
-                        <a className="nav-link text-white" href="#pricing">
-                        Pricing
-                        </a>
-                    </li>
-                    <li className="nav-item nav-hover">
-                        <a className="nav-link text-white" href="#faqs">
-                        FAQs
-                        </a>
-                    </li>
-                    </ul>
-                    <div className="d-flex gap-2">
-                    <button className="btn-outline-primary colorwhite" onClick={() => setContactOpen(true)}>
-                        Contact Us
+                    <button
+                        className="navbar-toggler"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#navbarNav"
+                    >
+                        <span className="navbar-toggler-icon"></span>
                     </button>
-                    <Link to="/Signup">
-                        <button className="btn-primary">Sign Up</button>
-                    </Link>
+
+                    <div className="collapse navbar-collapse" id="navbarNav">
+                        <ul className="navbar-nav mx-auto gap-4">
+                            {/* FEATURES DROPDOWN */}
+                            <li className="nav-item nav-hover dropdown mega-parent">
+                                <a className="nav-link text-white underline-hover" href="#">
+                                    Features
+                                </a>
+
+                                <div className="mega-menu">
+                                    <div className="mega-column">
+                                        <h6>UPLOAD</h6>
+
+                                        <div className="mega-item">
+                                            <i className="bi bi-journal-text"></i>
+                                            <div>
+                                                <h5>Upload</h5>
+                                                <p>Upload files, manage projects, and access them anywhere.</p>
+                                            </div>
+                                        </div>
+
+                                        <div className="mega-item">
+                                            <i className="bi bi-camera-video"></i>
+                                            <div>
+                                                <h5>Download</h5>
+                                                <p>Download public snippets or full projects to study.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="mega-column">
+                                        <h6>CONNECT</h6>
+
+                                        <div className="mega-item">
+                                            <i className="bi bi-chat-dots"></i>
+                                            <div>
+                                                <h5>Explore</h5>
+                                                <p>Discover code from developers around the world.</p>
+                                            </div>
+                                        </div>
+
+                                        <div className="mega-item">
+                                            <i className="bi bi-people"></i>
+                                            <div>
+                                                <h5>Grow</h5>
+                                                <p>Enhance your coding journey all within one platform.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="mega-column">
+                                        <h6>CODE</h6>
+
+                                        <div className="mega-item">
+                                            <i className="bi bi-code"></i>
+                                            <div>
+                                                <h5>Built-in Compiler</h5>
+                                                <p>Write, test, and debug directly in your browser.</p>
+                                            </div>
+                                        </div>
+
+                                        <div className="mega-footer">
+                                            <a
+                                                href="#integrations"
+                                                className="learn-btn"
+                                                onClick={(e) => {
+                                                    e.preventDefault();
+                                                    document.querySelector(".mega-menu").classList.remove("active");
+                                                    setTimeout(() => {
+                                                        document.querySelector("#integrations")?.scrollIntoView({
+                                                            behavior: "smooth",
+                                                        });
+                                                    }, 50);
+                                                }}
+                                            >
+                                                Learn More
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+
+                            <li className="nav-item nav-hover">
+                                <a className="nav-link text-white" href="#pricing">Pricing</a>
+                            </li>
+
+                            <li className="nav-item nav-hover">
+                                <a className="nav-link text-white" href="#faqs">FAQs</a>
+                            </li>
+                        </ul>
+
+                        <div className="d-flex gap-2">
+                            <Link to="/Login">
+                            <button className="btn-outline-primary colorwhite">Log in</button>
+                            </Link>
+                            <Link to="/Signup">
+                                <button className="btn-primary">Sign Up</button>
+                            </Link>
+                        </div>
                     </div>
-                </div>
                 </div>
             </nav>
+
 
             {/* BACKGROUND ONLY FOR WELCOME + VIDEO */}
             <div ref={backgroundRef} id="background" className="min-h-screen">
@@ -233,7 +240,10 @@
                     <button className="btn btn-outline-primary">Try it now</button>
                     </Link>
                 </div>
-                <div className="video-container mt-5 fade-section">
+                </div>
+            </div>
+
+            <div className="video-container mt-5 fade-section">
                     <video
                     src={demoVideo}
                     autoPlay
@@ -246,8 +256,6 @@
                     Your browser does not support the video tag.
                     </video>
                 </div>
-                </div>
-            </div>
 
             {/* SCROLLER SECTION */}
             <div className="scroller">
@@ -438,7 +446,9 @@
                     </li>
                     </ul>
                     <Link to="/Signup">
-                    <button className="pricing-btn">Get Started</button>
+                    <div className="pricing-btn-container">
+                        <button className="btn-primary">Get Started</button>
+                    </div>
                     </Link>
                 </div>
 
@@ -446,14 +456,17 @@
                     <i className="bi bi-gem icon"></i>
                     <h2>Premium Plan</h2>
                     <p className="price">
-                    ₱499 <span>/month</span>
+                    ₱499 <span>/month</span>    
                     </p>
                     <ul>
                     <li>
                         <i className="bi bi-check-circle-fill"></i> All free features included
                     </li>
                     <li>
-                        <i className="bi bi-check-circle-fill"></i> Unlimited Download/View access to public code
+                        <i className="bi bi-check-circle-fill"></i> Unlimited code download
+                    </li>
+                    <li>
+                        <i className="bi bi-check-circle-fill"></i> Unlimeted code view
                     </li>
                     <li>
                         <i className="bi bi-check-circle-fill"></i> Priority support
@@ -463,7 +476,9 @@
                     </li>   
                     </ul>
                     <Link to="/Signup">
+                    <div className="pricing-btn-container">
                     <button className="pricing-btn premium-btn"> Upgrade Now</button>
+                    </div>
                     </Link>
                 </div>
                 </div>
@@ -526,7 +541,7 @@
                     </div>
                     <h2 className="font-bold mb-2">See CodeVault in action</h2>
                     <p className="mb-4 text-gray-300">
-                    See how students like yours are using CodeVault to create and upload.
+                    Experience CodeVault with your own codebase and design system. Upload your files and begin coding.
                     </p>
                     <Link to="/contact">
                     <button className="btn btn-outline-primary">Book a demo</button>
@@ -559,7 +574,7 @@
             <footer className="site-footer">
                 <hr className="hrr"></hr>
             <div className="footer-top text-center mb-3">
-                <p>© 2025 Builder.io, Inc.</p>
+                <p>© 2025 CodeVault, Inc.</p>
                 <div className="footer-links">
                 <a href="#" className="mx-2">Security</a>
                 <a href="#" className="mx-2">Privacy Policy</a>
@@ -581,5 +596,6 @@
             </div>
         );
         }
+        
 
         export default Home;
