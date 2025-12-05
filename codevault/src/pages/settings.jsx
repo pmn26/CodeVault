@@ -180,7 +180,6 @@ function Settings() {
                         type="button"
                         className="password-toggle"
                         onClick={() => setShowPassword((s) => !s)}
-                        aria-label={showPassword ? "Hide password" : "Show password"}
                       >
                         {showPassword ? "Hide" : "Show"}
                       </button>
@@ -188,10 +187,6 @@ function Settings() {
                   ) : (
                     <em>Not available</em>
                   )}
-                </p>
-                <p style={{ marginTop: 8, fontSize: "0.85rem", color: "#4b4b8a" }}>
-                  Tip: If the info isn't showing, your login/signup might not be saving
-                  credentials to localStorage/sessionStorage. Check the console (F12).
                 </p>
               </div>
             )}
@@ -337,6 +332,14 @@ function Settings() {
             onClick={() => setActiveSection("support")}
           >
             Support & Feedback
+          </button>
+
+          {/* ⭐ NEW ADMIN BUTTON ⭐ */}
+          <button
+            className={activeSection === "admin" ? "active" : ""}
+            onClick={() => navigate("/admin")}
+          >
+            Admin Panel
           </button>
         </div>
 

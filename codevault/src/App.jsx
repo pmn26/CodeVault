@@ -17,10 +17,14 @@ import Billing from "./pages/Billing.jsx";
 import Review from "./pages/Review.jsx";
 import FolderContent from "./pages/FolderContent.jsx";
 
+// ⭐ NEW: Admin Page
+import Admin from "./pages/Admin.jsx";
+
 function App() {
   return (
     <Router>
       <Routes>
+
         {/* Public Routes */}
         <Route path="/" element={<Home />} />
         <Route path="/billing" element={<Billing />} />
@@ -28,9 +32,13 @@ function App() {
         <Route path="/signup" element={<Signup />} />
         <Route path="/login" element={<Login />} />
 
-        {/* Dashboard Layout Routes */}
+        {/* ---------- ADMIN ROUTE ---------- */}
+          <Route path="/admin" element={<Admin />} />
+
+        {/* Dashboard Routes */}
         <Route element={<DashboardLayout />}>
           <Route path="/mainpage" element={<MainPage />} />
+
           <Route
             path="/code-editor"
             element={
@@ -39,12 +47,18 @@ function App() {
               </ChakraProvider>
             }
           />
+
           <Route path="/folders" element={<FoldersPage />} />
-          <Route path="/folders/:name" element={<FolderContent />} /> 
+          <Route path="/folders/:name" element={<FolderContent />} />
+
           <Route path="/projects" element={<Projects />} />
           <Route path="/userprofile" element={<UserProfile />} />
-          <Route path="/settings" element={<Settings />} /> 
+          <Route path="/settings" element={<Settings />} />
+
+          {/* ⭐ ADMIN DASHBOARD */}
+          <Route path="/admin" element={<Admin />} />
         </Route>
+
       </Routes>
     </Router>
   );

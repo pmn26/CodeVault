@@ -208,8 +208,6 @@ return (
   </div>
 )}
 
-
-
     <div className={`main-content ${!isMobile && "shifted"}`}>
         <Outlet />
     </div>
