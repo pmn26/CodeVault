@@ -17,8 +17,14 @@ import Billing from "./pages/Billing.jsx";
 import Review from "./pages/Review.jsx";
 import FolderContent from "./pages/FolderContent.jsx";
 
-// ⭐ NEW: Admin Page
+// Admin Components
 import Admin from "./pages/Admin.jsx";
+import AdminHome from "./pages/AdminHome.jsx";
+import AdminUsers from "./pages/AdminUsers.jsx";
+import AdminContent from "./pages/AdminContent.jsx";
+import AdminSystemSettings from "./pages/AdminSystemSettings.jsx";
+import AdminAnalytics from "./pages/AdminAnalytics.jsx";
+import AdminAccountSettings from "./pages/AdminAccountSettings.jsx";
 
 function App() {
   return (
@@ -32,10 +38,18 @@ function App() {
         <Route path="/signup" element={<Signup />} />
         <Route path="/login" element={<Login />} />
 
-        {/* ---------- ADMIN ROUTE ---------- */}
-          <Route path="/admin" element={<Admin />} />
+        {/* Admin Routes - Nested under /admin */}
+        <Route path="/admin" element={<Admin />}>
+          <Route index element={<AdminHome />} />
+          <Route path="home" element={<AdminHome />} />
+          <Route path="users" element={<AdminUsers />} />
+          <Route path="content" element={<AdminContent />} />
+          <Route path="system-settings" element={<AdminSystemSettings />} />
+          <Route path="analytics" element={<AdminAnalytics />} />
+          <Route path="settings" element={<AdminAccountSettings />} />
+        </Route>
 
-        {/* Dashboard Routes */}
+        {/* Dashboard Routes (for regular users) */}
         <Route element={<DashboardLayout />}>
           <Route path="/mainpage" element={<MainPage />} />
 
@@ -54,9 +68,6 @@ function App() {
           <Route path="/projects" element={<Projects />} />
           <Route path="/userprofile" element={<UserProfile />} />
           <Route path="/settings" element={<Settings />} />
-
-          {/* ⭐ ADMIN DASHBOARD */}
-          <Route path="/admin" element={<Admin />} />
         </Route>
 
       </Routes>
