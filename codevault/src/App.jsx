@@ -49,7 +49,7 @@ function App() {
           <Route path="settings" element={<AdminAccountSettings />} />
         </Route>
 
-        {/* Dashboard Routes (for regular users) */}
+        {/* Dashboard Routes (for regular users) - ALL USE DashboardLayout */}
         <Route element={<DashboardLayout />}>
           <Route path="/mainpage" element={<MainPage />} />
 

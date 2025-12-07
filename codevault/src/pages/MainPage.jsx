@@ -1,6 +1,5 @@
-import { FaFolder } from "react-icons/fa";
-import "../assets/mainpage.css";
-import "../assets/dashboard.css";
+import { FaFolder, FaFileAlt } from "react-icons/fa";
+import "../assets/DashboardLayout.css"; // Use the new scoped CSS file
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom"; 
 import Modal from "../components/modal";
@@ -9,9 +8,9 @@ import UploadFiles from "../components/UploadFiles";
 
 function MainPage() {
   const navigate = useNavigate(); 
-
   const [isCreateFolderOpen, setCreateFolderOpen] = useState(false);
   const [isUploadOpen, setUploadOpen] = useState(false);
+  
   const [folders, setFolders] = useState([
     { name: "Python" },
     { name: "Java" },
@@ -24,7 +23,6 @@ function MainPage() {
     { name: "BMI Calculator" },
   ]);
 
-  // Handle new folder creation
   const handleFolderCreate = (name) => {
     if (!name.trim()) {
       alert("Please enter a folder name.");
@@ -38,94 +36,97 @@ function MainPage() {
     setCreateFolderOpen(false);
   };
 
-  //Handle file upload
   const handleFileUpload = (file) => {
     console.log("File uploaded:", file.name);
     alert(`File "${file.name}" uploaded successfully!`);
     setUploadOpen(false);
   };
 
-  // Handle folder click → navigate to /folder/:name
   const handleFolderClick = (folderName) => {
     navigate(`/folders/${encodeURIComponent(folderName)}`);
   };
 
-  // Handle project click → navigate to /folder/:name (reuse FolderContent)
   const handleProjectClick = (projectName) => {
     navigate(`/folders/${encodeURIComponent(projectName)}`);
   };
 
   return (
-    <div className="main-page">
-      {/*Create Folder Modal */}
+    <>
+      {/* Modals */}
       <Modal isOpen={isCreateFolderOpen} onClose={() => setCreateFolderOpen(false)}>
         <CreateFolder onSubmit={handleFolderCreate} />
       </Modal>
 
-      {/*Upload Files Modal */}
       <Modal isOpen={isUploadOpen} onClose={() => setUploadOpen(false)}>
         <UploadFiles onUpload={handleFileUpload} />
       </Modal>
 
-      {/*Welcome / Upload Section */}
-      <div className="upload-card">
-        <h3>Welcome Back!</h3>
-        <p>
-          Manage your folders, upload files, and explore your projects with ease.
-        </p>
-        <a href="/billing#annual" target="_blank" rel="noopener noreferrer">
-          <button className="Main-Buttons upgrade">Upgrade</button>
+      {/* Hero Welcome Section */}
+      <div className="hero">
+        <h1 className="hero-title">Welcome Back!</h1>
+        <p className="hero-sub">Manage your folders, upload files, and explore your projects with ease.</p>
+      </div>
+
+      {/* Quick Actions */}
+      <div className="quick-actions">
+        <button className="action-card primary" onClick={() => setCreateFolderOpen(true)}>
+          <FaFolder size={32} />
+          <span>Create Folder</span>
+        </button>
+        <button className="action-card secondary" onClick={() => setUploadOpen(true)}>
+          <FaFileAlt size={32} />
+          <span>Upload Files</span>
+        </button>
+        <a href="/billing#annual" target="_blank" rel="noopener noreferrer" style={{textDecoration: 'none'}}>
+          <button className="action-card upgrade">
+            <span style={{fontSize: '32px'}}>⚡</span>
+            <span>Upgrade Plan</span>
+          </button>
         </a>
       </div>
 
-      {/*Folder & Upload Buttons */}
-      <div className="folder-actions">
-        <button className="Main-Buttons" onClick={() => setCreateFolderOpen(true)}>
-          Create Folder
-        </button>
-        <button className="Main-Buttons" onClick={() => setUploadOpen(true)}>
-          Upload Files
-        </button>
-      </div>
-
-      {/*Folder + Project Section */}
+      {/* Folders Section */}
       <div className="content-section">
-        {/* Folders */}
-        <div className="folders-area">
-          <h4>My Folders</h4>
-          <div className="folder-grid">
-            {folders.map((folder, index) => (
-              <div
-                key={index}
-                className="folder-card"
-                onClick={() => handleFolderClick(folder.name)} 
-                title={`Open ${folder.name}`}
-              >
-                <FaFolder size={40} className="folder-icon" />
-                <p>{folder.name}</p>
-              </div>
-            ))}
-          </div>
+        <div className="section-header">
+          <h2 className="section-title">My Folders</h2>
         </div>
-
-        {/* Projects */}
-        <div className="projects-area">
-          <h4>My Projects</h4>
-          <div className="project-grid">
-            {projects.map((project, index) => (
-              <div
-                key={index}
-                className="project-card"
-                onClick={() => handleProjectClick(project.name)} 
-                title={`Open ${project.name}`}
-              >
-                <p>{project.name}</p>
+        <div className="items-grid">
+          {folders.map((folder, index) => (
+            <div
+              key={index}
+              className="item-card"
+              onClick={() => handleFolderClick(folder.name)} 
+            >
+              <div className="item-icon-wrapper">
+                <FaFolder size={32} />
               </div>
-            ))}
-          </div>
+              <p className="item-name">{folder.name}</p>
+            </div>
+          ))}
         </div>
       </div>
-    </div>
+
+      {/* Projects Section */}
+      <div className="content-section">
+        <div className="section-header">
+          <h2 className="section-title">My Projects</h2>
+        </div>
+        <div className="items-grid">
+          {projects.map((project, index) => (
+            <div
+              key={index}
+              className="item-card project"
+              onClick={() => handleProjectClick(project.name)} 
+            >
+              <div className="item-icon-wrapper project">
+                <FaFileAlt size={28} />
+              </div>
+              <p className="item-name">{project.name}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </>
   );
 }
 
