@@ -8,6 +8,7 @@ const [selectedFile, setSelectedFile] = useState(null);
 const [files, setFiles] = useState([]);
 const [sortKey, setSortKey] = useState("date_desc");
 const [loading, setLoading] = useState(true);
+const [uploading, setUploading] = useState(false);
 
 // Sorting options
 const sortOptions = [
@@ -18,6 +19,7 @@ const sortOptions = [
 
 // Fetch uploaded files from backend
 const fetchFiles = async () => {
+    setLoading(true);
     try {
     const res = await axios.get(
         "http://localhost/CodeVault/codevault/codevault-backend/api/get_all_files_admin.php"
@@ -62,7 +64,7 @@ const handleFileChange = (event) => {
     const file = event.target.files[0];
     if (file) {
     setSelectedFile(file);
-    alert(`File selected: ${file.name}. (Upload feature coming soon!)`);
+    handleUpload(file);
     }
 };
 
@@ -70,23 +72,76 @@ const handleSortChange = (event) => {
     setSortKey(event.target.value);
 };
 
+// Upload code file to backend
+const handleUpload = async (file) => {
+    setUploading(true);
+
+    try {
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("folder_id", 1); // Change this as needed
+    formData.append("user_id", 1); // Change this as needed
+
+    const res = await axios.post(
+        "http://localhost/CodeVault/codevault/codevault-backend/api/upload.php",
+        formData,
+        {
+        headers: { "Content-Type": "multipart/form-data" },
+        withCredentials: true,
+        }
+    );
+
+    if (res.data.success) {
+        alert(res.data.message);
+        fetchFiles(); // Refresh file list after upload
+    } else {
+        alert("Upload failed: " + res.data.message);
+    }
+    } catch (err) {
+    console.error("Upload error:", err);
+    alert("Failed to upload file. Check console for details.");
+    } finally {
+    setUploading(false);
+    setSelectedFile(null);
+    }
+};
+
+// Handle file deletion
+const handleDelete = async (fileId) => {
+    if (!window.confirm("Are you sure you want to delete this file?")) return;
+
+    try {
+    const res = await axios.post(
+        "http://localhost/CodeVault/codevault/codevault-backend/api/delete_file_admin.php",
+        { file_id: fileId },
+        { withCredentials: true }
+    );
+
+    if (res.data.success) {
+        alert(res.data.message);
+        setFiles(files.filter((f) => f.id !== fileId));
+    } else {
+        alert("Error: " + res.data.message);
+    }
+    } catch (err) {
+    console.error("Delete error:", err);
+    alert("Failed to delete file. See console for details.");
+    }
+};
+
 return (
     <>
     <section className="hero">
         <h2 className="hero-title">Content Management</h2>
         <p className="hero-sub">
-        Review and manage all uploaded files on the platform.
+        Review, upload, and manage all uploaded code files.
         </p>
     </section>
 
     {/* Upload Button */}
     <div
         className="upload-section"
-        style={{
-        display: "flex",
-        justifyContent: "flex-end",
-        marginBottom: "20px",
-        }}
+        style={{ display: "flex", justifyContent: "flex-end", marginBottom: "20px" }}
     >
         <input
         type="file"
@@ -97,8 +152,9 @@ return (
         <button
         className="action-btn btn-primary"
         onClick={handleFileUploadClick}
+        disabled={uploading}
         >
-        + Upload New File
+        {uploading ? "Uploading..." : "+ Upload New File"}
         </button>
     </div>
 
@@ -148,13 +204,9 @@ return (
 
         {/* Table */}
         {loading ? (
-        <p style={{ padding: "20px", textAlign: "center" }}>
-            Loading uploaded files...
-        </p>
+        <p style={{ padding: "20px", textAlign: "center" }}>Loading uploaded files...</p>
         ) : sortedFiles.length === 0 ? (
-        <p style={{ padding: "20px", textAlign: "center" }}>
-            No uploaded files found.
-        </p>
+        <p style={{ padding: "20px", textAlign: "center" }}>No uploaded files found.</p>
         ) : (
         <div className="table-responsive-wrapper">
             <table className="data-table">
@@ -176,12 +228,7 @@ return (
                     <td>{file.title}</td>
                     <td>{file.author}</td>
                     <td>
-                    <span
-                        style={{
-                        fontSize: "13px",
-                        color: "rgba(255,255,255,0.7)",
-                        }}
-                    >
+                    <span style={{ fontSize: "13px", color: "rgba(255,255,255,0.7)" }}>
                         {file.location}
                     </span>
                     </td>
@@ -192,6 +239,13 @@ return (
                         onClick={() => window.open(file.url, "_blank")}
                     >
                         View
+                    </button>
+                    <button
+                        className="action-btn btn-danger"
+                        style={{ marginLeft: "8px" }}
+                        onClick={() => handleDelete(file.id)}
+                    >
+                        Delete
                     </button>
                     </td>
                 </tr>
