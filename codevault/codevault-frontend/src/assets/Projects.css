@@ -1,0 +1,252 @@
+:root {
+  --dark-blue: #010120;
+  --medium-blue: #1a1a4a;
+  --light-blue: #4d5baa;
+  --accent-blue: #6f7dfb;
+  --panel-bg: #0b0b38;
+  --folder-bg: #1b1b63;
+  --text-color: #f5f5f5;
+}
+
+.folder-page {
+  padding: 50px;
+  background-color: var(--dark-blue);
+  min-height: 100vh;
+  font-family: "Poppins", sans-serif;
+  color: var(--text-color);
+}
+
+.folders-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 40px;
+}
+
+.folders-header h2 {
+  font-size: 26px;
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+.folders-header h2:hover {
+  color: var(--accent-blue);
+}
+
+.language-dropdown {
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: none;
+  background-color: var(--folder-bg);
+  color: var(--text-color);
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.language-dropdown:hover {
+  background-color: var(--medium-blue);
+}
+
+.folders-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 40px;
+  justify-items: center;
+}
+
+.folder-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: var(--folder-bg);
+  border-radius: 16px;
+  padding: 35px 25px;
+  width: 220px;
+  text-decoration: none;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  transition: all 0.3s ease;
+  color: var(--text-color);
+  cursor: pointer;
+}
+
+.folder-item:hover {
+  transform: translateY(-6px) scale(1.05);
+  box-shadow: 0 8px 25px rgba(111, 125, 251, 0.35);
+  border-color: rgba(111, 125, 251, 0.5);
+}
+
+.folder-icon {
+  font-size: 65px;
+  color: var(--accent-blue);
+  margin-bottom: 14px;
+  transition: all 0.3s ease;
+}
+
+.folder-item:hover .folder-icon {
+  color: #9da8ff;
+  filter: drop-shadow(0px 3px 8px rgba(111, 125, 251, 0.6));
+}
+
+.folder-item p {
+  font-weight: 600;
+  color: var(--text-color);
+  text-align: center;
+  font-size: 16px;
+  margin-top: 6px;
+  word-break: break-word;
+}
+
+.empty-section {
+  grid-column: 1 / -1;
+  text-align: center;
+  color: var(--text-color);
+  opacity: 0.8;
+  margin-top: 80px;
+}
+
+.empty-icon {
+  font-size: 80px;
+  color: var(--accent-blue);
+  margin-bottom: 15px;
+}
+
+.empty-section h3 {
+  font-size: 20px;
+  margin-bottom: 6px;
+}
+
+.empty-section p {
+  color: #ccc;
+  font-size: 15px;
+}
+
+.popup-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+
+.popup-box {
+  background: var(--panel-bg);
+  padding: 30px;
+  border-radius: 12px;
+  width: 1000px;
+  max-width: 95%;
+  height: 600px;
+  position: relative;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+}
+
+.close-btn {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  font-size: 22px;
+  color: var(--text-color);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.close-btn:hover {
+  color: var(--accent-blue);
+}
+
+.file-content-container {
+  display: flex;
+  gap: 20px;
+  height: 100%;
+  margin-top: 40px;
+}
+
+.code-section {
+  flex: 3;
+  background: var(--medium-blue);
+  border-radius: 10px;
+  overflow: auto;
+  padding: 15px;
+}
+
+.code-section pre {
+  margin: 0;
+  font-family: 'Fira Code', monospace;
+  font-size: 15px;
+  line-height: 1.5;
+  color: #f5f5f5;
+}
+
+.file-info-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 10px;
+  background: var(--folder-bg);
+  padding: 15px;
+  border-radius: 10px;
+  overflow-y: auto;
+  color: var(--text-color);
+}
+
+.file-info-section h3 {
+  font-size: 1.2rem;
+  margin-bottom: 8px;
+}
+
+.file-info-section p {
+  font-size: 0.95rem;
+  margin: 4px 0;
+}
+
+.action-btn {
+  margin-top: auto;
+  padding: 10px;
+  font-size: 0.95rem;
+  cursor: pointer;
+  border: none;
+  background-color: var(--accent-blue);
+  color: white;
+  border-radius: 8px;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.action-btn:hover {
+  background-color: #5265e3;
+}
+
+@media (max-width: 768px) {
+  .folders-grid {
+    gap: 25px;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  }
+  .folder-item {
+    width: 160px;
+    padding: 25px 15px;
+  }
+  .folder-icon {
+    font-size: 50px;
+  }
+  .folder-item p {
+    font-size: 14px;
+  }
+  .file-content-container {
+    flex-direction: column;
+    gap: 15px;
+  }
+  .code-section, .file-info-section {
+    flex: unset;
+    width: 100%;
+    height: 300px;
+  }
+}

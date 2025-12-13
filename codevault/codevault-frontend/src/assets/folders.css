@@ -1,0 +1,135 @@
+:root {
+  --dark-blue: #010120;
+  --medium-blue: #1a1a4a;
+  --light-blue: #4d5baa;
+  --accent-blue: #6f7dfb;
+  --folder-bg: #1b1b63;
+  --panel-bg: #0b0b38;
+  --text-color: #f5f5f5;
+}
+
+/* PAGE LAYOUT */
+.folders-page {
+  padding: 100px 40px 40px;
+  background-color: var(--dark-blue);
+  min-height: 100vh;
+  font-family: "Poppins", sans-serif;
+  color: var(--text-color);
+}
+
+.folders-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 40px;
+}
+
+.folders-controls button {
+  background-color: var(--light-blue);
+  color: white;
+  border: none;
+  padding: 8px 20px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.25s ease;
+}
+.folders-controls button:hover { background-color: var(--accent-blue); transform: scale(1.05); }
+
+/* FOLDER GRID */
+.folders-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 30px;
+}
+
+.folder-item {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  background: var(--folder-bg);
+  border-radius: 16px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+.folder-item:hover { transform: translateY(-5px) scale(1.05); }
+.folder-icon { font-size: 50px; color: var(--accent-blue); margin-bottom: 12px; }
+.folder-item p { font-weight: 600; text-align: center; font-size: 15px; color: var(--text-color); }
+
+.folder-menu {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  cursor: pointer;
+}
+
+/* POPUP MODAL */
+.popup-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.popup-box {
+  background: var(--panel-bg);
+  padding: 15px 20px;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 320px;
+  text-align: center;
+  position: relative;
+}
+
+.popup-box h3 {
+  color: var(--text-color);
+  margin-bottom: 8px;
+}
+
+.popup-box input {
+  width: 100%;
+  padding: 8px;
+  border-radius: 6px;
+  border: none;
+  margin-bottom: 10px;
+  font-size: 14px;
+}
+
+.popup-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.save-btn, .delete-btn, .create-folder-btn {
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 14px;
+}
+.save-btn { background-color: #4CAF50; color: #fff; }
+.delete-btn { background-color: #f44336; color: #fff; }
+.create-folder-btn { background-color: var(--accent-blue); color: #fff; width: 100%; }
+
+.save-btn:hover { background-color: #45a049; }
+.delete-btn:hover { background-color: #d32f2f; }
+.create-folder-btn:hover { background-color: #5265e3; }
+
+.close-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  border: none;
+  background: transparent;
+  color: var(--text-color);
+  font-size: 16px;
+  cursor: pointer;
+}
+.close-btn:hover { color: #ff7676; }
