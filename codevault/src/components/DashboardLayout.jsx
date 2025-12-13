@@ -75,14 +75,14 @@ function DashboardLayout() {
                 onClick={() => navigate('/projects')}
               >
                 <FaProjectDiagram size={20} />
-                <span>My Projects</span>
+                <span>All Projects</span>
               </button>
               <button 
                 className={`side-btn ${activeNav === 'folders' ? 'active' : ''}`}
                 onClick={() => navigate('/folders')}
               >
                 <FaListAlt size={20} />
-                <span>All Folders</span>
+                <span>My Projects</span>
               </button>
             </nav>
 
