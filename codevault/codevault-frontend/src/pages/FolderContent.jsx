@@ -1,8 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { FaFileAlt, FaUpload, FaTimes, FaDownload } from "react-icons/fa";
+import { FaFileAlt, FaUpload, FaTimes, FaDownload, FaArrowLeft } from "react-icons/fa";
 import axios from "axios";
 import "../assets/foldercontent.css";
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
 
 function FolderContent() {
   const { folderId, name } = useParams();
@@ -10,16 +12,15 @@ function FolderContent() {
   const [files, setFiles] = useState([]);
   const [showUploadPopup, setShowUploadPopup] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
-  const [activeFile, setActiveFile] = useState(null); // file currently clicked for popup
-
+  const [activeFile, setActiveFile] = useState(null);
+  const [fileContent, setFileContent] = useState("");
   const fileInputRef = useRef(null);
+
   const user = JSON.parse(localStorage.getItem("user"));
   const API_BASE = "http://localhost/CodeVault/codevault/codevault-backend/api";
 
-  // Fetch files
   const fetchFiles = async () => {
     if (!user?.id || !folderId) return;
-
     try {
       const res = await axios.get(`${API_BASE}/get_files.php`, {
         params: { folder_id: folderId, user_id: user.id },
@@ -27,7 +28,7 @@ function FolderContent() {
       if (res.data.success) setFiles(res.data.files);
       else setFiles([]);
     } catch (err) {
-      console.error("Error fetching files:", err);
+      console.error(err);
       setFiles([]);
     }
   };
@@ -36,7 +37,6 @@ function FolderContent() {
     if (folderId) fetchFiles();
   }, [folderId]);
 
-  // Upload file
   const handleUploadSubmit = async (e) => {
     e.preventDefault();
     if (!selectedFile) return alert("Please select a file.");
@@ -64,19 +64,39 @@ function FolderContent() {
     }
   };
 
-  // Download file
   const handleDownload = (file) => {
     const link = document.createElement("a");
     link.href = file.url;
     link.download = file.filename;
     link.click();
-    setActiveFile(null); // close popup
+  };
+
+  const openFilePopup = async (file) => {
+    setActiveFile(file);
+    setFileContent("");
+
+    try {
+      const res = await axios.get(`${API_BASE}/get_file_content.php`, {
+        params: { file_id: file.id },
+      });
+      if (res.data.success) setFileContent(res.data.content);
+      else setFileContent("// Unable to load file content.");
+    } catch (err) {
+      console.error(err);
+      setFileContent("// Error loading file content.");
+    }
   };
 
   return (
     <div className="folder-page">
       <div className="folders-header">
-        <h2 onClick={() => navigate("/folders")}>{name || "Folder"}</h2>
+        <h2 className="folder-header">
+          <FaArrowLeft
+            style={{ cursor: "pointer", marginRight: "10px" }}
+            onClick={() => navigate("/folders")}
+          />
+          {name || "Folder"}
+        </h2>
         <div className="folders-controls">
           <button className="create-btn" onClick={() => setShowUploadPopup(true)}>
             <FaUpload style={{ marginRight: "8px" }} />
@@ -97,7 +117,7 @@ function FolderContent() {
             <div
               key={file.id}
               className="folder-item"
-              onClick={() => setActiveFile(file)} // open popup
+              onClick={() => openFilePopup(file)}
             >
               <FaFileAlt className="folder-icon" />
               <p>{file.filename}</p>
@@ -127,18 +147,45 @@ function FolderContent() {
         </div>
       )}
 
-      {/* File Action Popup */}
+      {/* File Content Popup */}
       {activeFile && (
         <div className="popup-overlay" onClick={() => setActiveFile(null)}>
-          <div className="popup-box" onClick={(e) => e.stopPropagation()}>
+          <div className="popup-box file-content-popup" onClick={(e) => e.stopPropagation()}>
             <button className="close-btn" onClick={() => setActiveFile(null)}>
               <FaTimes />
             </button>
-            <h3>{activeFile.filename}</h3>
-            <button className="action-btn" onClick={() => handleDownload(activeFile)}>
-              <FaDownload style={{ marginRight: "5px" }} /> Download
-            </button>
-            {/* Add more actions here if needed */}
+
+            <div className="file-content-container">
+              <div className="code-section">
+                <SyntaxHighlighter
+                  language="javascript"
+                  style={vscDarkPlus}
+                  showLineNumbers
+                  wrapLines
+                  customStyle={{
+                    fontSize: "16px",
+                    height: "500px",
+                    overflowY: "auto",
+                    pointerEvents: "none"
+                  }}
+                >
+                  {fileContent || "// No content available"}
+                </SyntaxHighlighter>
+                <div className="overlay-block" />
+              </div>
+
+              <div className="file-info-section">
+                <h3>{activeFile.filename}</h3>
+                <p><strong>Uploaded by:</strong> {activeFile.uploader_name}</p>
+                <p><strong>Uploaded at:</strong> {new Date(activeFile.uploaded_at).toLocaleString()}</p>
+                {activeFile.description && (
+                  <p><strong>Description:</strong> {activeFile.description}</p>
+                )}
+                <button className="action-btn" onClick={() => handleDownload(activeFile)}>
+                  <FaDownload style={{ marginRight: "5px" }} /> Download
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       )}

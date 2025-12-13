@@ -1,5 +1,5 @@
 <?php
-$frontend = "http://localhost:5173";
+$frontend = "http://localhost:5174";
 header("Access-Control-Allow-Origin: $frontend");
 header("Access-Control-Allow-Credentials: true");
 header("Access-Control-Allow-Methods: GET, POST, OPTIONS");

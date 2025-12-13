@@ -217,4 +217,101 @@
     display: block;
 }
 
+/* Overlay for modals */
+.OtpModal {
+position: fixed;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+background: rgba(60, 64, 67, 0.6); /* Google semi-transparent overlay */
+display: flex;
+justify-content: center;
+align-items: center;
+z-index: 1000;
+}
+
+/* Modal content box */
+.OtpContent {
+background: #fff;
+border-radius: 8px;
+padding: 30px 25px;
+width: 380px;
+max-width: 90%;
+box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+text-align: center;
+font-family: 'Roboto', sans-serif;
+animation: fadeIn 0.3s ease-out;
+}
+
+/* Modal headings */
+.OtpContent h3 {
+font-size: 20px;
+margin-bottom: 12px;
+color: #202124;
+}
+
+/* Modal text */
+.OtpContent p {
+font-size: 14px;
+margin-bottom: 20px;
+color: #5f6368;
+}
+
+/* Buttons inside modal */
+.OtpContent button {
+background-color: #1a73e8;
+color: #fff;
+border: none;
+border-radius: 4px;
+padding: 10px 16px;
+margin: 5px;
+font-size: 14px;
+cursor: pointer;
+transition: background-color 0.2s ease;
+}
+
+.OtpContent button:hover {
+background-color: #1669c1;
+}
+
+/* Secondary button style */
+.OtpContent button.secondary {
+background-color: #f1f3f4;
+color: #3c4043;
+}
+
+.OtpContent button.secondary:hover {
+background-color: #e8eaed;
+}
+
+/* OTP input */
+.OtpInput {
+width: 100%;
+padding: 10px;
+font-size: 16px;
+margin-bottom: 16px;
+border: 1px solid #dadce0;
+border-radius: 4px;
+text-align: center;
+outline: none;
+}
+
+.OtpInput:focus {
+border-color: #1a73e8;
+box-shadow: 0 0 0 2px rgba(26, 115, 232, 0.2);
+}
+
+/* Animation */
+@keyframes fadeIn {
+0% {
+    transform: scale(0.95);
+    opacity: 0;
+}
+100% {
+    transform: scale(1);
+    opacity: 1;
+}
+}
+
 

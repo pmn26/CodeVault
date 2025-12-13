@@ -1,6 +1,6 @@
 <?php
 // === CORS headers must be first ===
-$frontend = "http://localhost:5173";
+$frontend = "http://localhost:5174";
 
 header("Access-Control-Allow-Origin: $frontend");
 header("Access-Control-Allow-Credentials: true");
@@ -34,7 +34,37 @@ if ($conn->connect_error) {
     exit();
 }
 
-// Check if folder exists
+// Get user status
+$stmt = $conn->prepare("SELECT status FROM users WHERE id = ?");
+$stmt->bind_param("i", $user_id);
+$stmt->execute();
+$stmt->bind_result($status);
+if (!$stmt->fetch()) {
+    echo json_encode(["success" => false, "message" => "User not found"]);
+    $stmt->close();
+    $conn->close();
+    exit();
+}
+$stmt->close();
+
+$is_premium = ($status === 'premium');
+
+// Count user's existing folders
+$stmt = $conn->prepare("SELECT COUNT(*) FROM folders WHERE user_id = ?");
+$stmt->bind_param("i", $user_id);
+$stmt->execute();
+$stmt->bind_result($folder_count);
+$stmt->fetch();
+$stmt->close();
+
+// Check limit for non-premium users
+if (!$is_premium && $folder_count >= 5) {
+    echo json_encode(["success" => false, "message" => "Non-premium users can only create up to 5 folders"]);
+    $conn->close();
+    exit();
+}
+
+// Check if folder already exists
 $stmt = $conn->prepare("SELECT id FROM folders WHERE name = ? AND user_id = ?");
 $stmt->bind_param("si", $name, $user_id);
 $stmt->execute();

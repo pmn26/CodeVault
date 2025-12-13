@@ -1,4 +1,4 @@
-import { FaFolder, FaFileAlt } from "react-icons/fa";
+import { FaFolder, FaFileAlt, FaEllipsisV } from "react-icons/fa";
 import "../assets/DashboardLayout.css";
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom"; 
@@ -12,6 +12,10 @@ function MainPage() {
   const [isCreateFolderOpen, setCreateFolderOpen] = useState(false);
   const [isUploadOpen, setUploadOpen] = useState(false);
   const [folders, setFolders] = useState([]);
+  const [folderModalOpen, setFolderModalOpen] = useState(false);
+  const [selectedFolder, setSelectedFolder] = useState(null);
+  const [editFolderName, setEditFolderName] = useState("");
+
   const user = JSON.parse(localStorage.getItem("user"));
   const API_BASE = "http://localhost/CodeVault/codevault/codevault-backend/api";
 
@@ -49,7 +53,44 @@ function MainPage() {
     }
   };
 
-  // Upload file and redirect to folder page
+  const handleEditFolder = async (id, newName) => {
+    try {
+      const res = await axios.post(
+        `${API_BASE}/edit_folder.php`,
+        { id, name: newName },
+        { headers: { "Content-Type": "application/json" } }
+      );
+      if (res.data.success) {
+        setFolders(folders.map(f => (f.id === id ? { ...f, name: newName } : f)));
+      } else {
+        alert(res.data.message);
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Failed to edit folder");
+    }
+  };
+
+  const handleDeleteFolder = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this folder?")) return;
+
+    try {
+      const res = await axios.post(
+        `${API_BASE}/delete_folder.php`,
+        { id },
+        { headers: { "Content-Type": "application/json" } }
+      );
+      if (res.data.success) {
+        setFolders(folders.filter(f => f.id !== id));
+      } else {
+        alert(res.data.message);
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Failed to delete folder");
+    }
+  };
+
   const handleFileUpload = async (file, folderId) => {
     if (!folderId) return alert("Please select a folder to upload to");
 
@@ -66,7 +107,7 @@ function MainPage() {
       if (res.data.success) {
         alert(`File "${res.data.filename}" uploaded successfully!`);
         setUploadOpen(false);
-        navigate(`/folders/${folderId}`); // redirect to folder page
+        navigate(`/folders/${folderId}`);
       } else alert(res.data.message);
     } catch (err) {
       console.error(err);
@@ -76,12 +117,50 @@ function MainPage() {
 
   return (
     <>
-      {/* Modals */}
+      {/* Create Folder Modal */}
       <Modal isOpen={isCreateFolderOpen} onClose={() => setCreateFolderOpen(false)}>
         <CreateFolder onSubmit={handleFolderCreate} />
       </Modal>
+
+      {/* Upload File Modal */}
       <Modal isOpen={isUploadOpen} onClose={() => setUploadOpen(false)}>
         <UploadFiles onUpload={handleFileUpload} folders={folders} />
+      </Modal>
+
+      {/* Folder Edit/Delete Modal */}
+      <Modal isOpen={folderModalOpen} onClose={() => setFolderModalOpen(false)}>
+        {selectedFolder && (
+          <div className="folder-action-modal">
+            <h3>Edit Folder</h3>
+            <input
+              type="text"
+              value={editFolderName}
+              onChange={(e) => setEditFolderName(e.target.value)}
+              placeholder="Folder name"
+            />
+            <div className="modal-buttons">
+              <button
+                className="save-btn"
+                onClick={() => {
+                  if (!editFolderName.trim()) return alert("Folder name cannot be empty");
+                  handleEditFolder(selectedFolder.id, editFolderName.trim());
+                  setFolderModalOpen(false);
+                }}
+              >
+                Save
+              </button>
+              <button
+                className="delete-btn"
+                onClick={() => {
+                  handleDeleteFolder(selectedFolder.id);
+                  setFolderModalOpen(false);
+                }}
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        )}
       </Modal>
 
       {/* Hero */}
@@ -105,9 +184,23 @@ function MainPage() {
         <h2>My Folders</h2>
         <div className="items-grid">
           {folders.map(folder => (
-            <div key={folder.id} className="item-card" onClick={() => navigate(`/folders/${folder.id}`)}>
-              <FaFolder size={32} />
-              <p>{folder.name}</p>
+            <div key={folder.id} className="item-card">
+              <div className="folder-menu">
+                <FaEllipsisV
+                  size={18}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setSelectedFolder(folder);
+                    setEditFolderName(folder.name);
+                    setFolderModalOpen(true);
+                  }}
+                />
+              </div>
+
+              <div className="folder-main" onClick={() => navigate(`/folders/${folder.id}`)}>
+                <FaFolder size={32} />
+                <p>{folder.name}</p>
+              </div>
             </div>
           ))}
         </div>

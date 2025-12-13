@@ -1,7 +1,5 @@
 <?php
-// Allow CORS for your frontend
-$frontend = "http://localhost:5173";
-header("Access-Control-Allow-Origin: $frontend");
+header("Access-Control-Allow-Origin: http://localhost:5174");
 header("Access-Control-Allow-Credentials: true");
 header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");

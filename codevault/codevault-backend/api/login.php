@@ -1,12 +1,10 @@
 <?php
-$frontend = "http://localhost:5173";
+$frontend = $_ENV['FRONTEND_ORIGIN'] ?? "http://localhost:5174";
 
-// Allow CORS for frontend
 if (isset($_SERVER['HTTP_ORIGIN']) && $_SERVER['HTTP_ORIGIN'] === $frontend) {
     header("Access-Control-Allow-Origin: $frontend");
     header("Access-Control-Allow-Credentials: true");
 }
-
 header("Access-Control-Allow-Methods: POST, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
 header("Content-Type: application/json; charset=UTF-8");
@@ -18,26 +16,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 
 require_once "../config.php";
 
-// Connect to database
 $conn = new mysqli($host, $username, $password, $db_name);
 if ($conn->connect_error) {
     echo json_encode(["message" => "Database connection failed", "error" => $conn->connect_error]);
     exit();
 }
 
-// Get JSON data from request
 $data = json_decode(file_get_contents("php://input"), true);
-
 if (!isset($data['email'])) {
     echo json_encode(["message" => "Missing required fields"]);
     exit();
 }
 
 $email = trim($data['email']);
-$password = isset($data['password']) ? $data['password'] : null;
+$password = $data['password'] ?? null;
 
-// Fetch user from DB
-$stmt = $conn->prepare("SELECT id, name, password, role FROM users WHERE email = ?");
+$stmt = $conn->prepare("SELECT id, name, password, role, verified FROM users WHERE email = ?");
 $stmt->bind_param("s", $email);
 $stmt->execute();
 $stmt->store_result();
@@ -49,21 +43,15 @@ if ($stmt->num_rows === 0) {
     exit();
 }
 
-$stmt->bind_result($id, $name, $hashed_password, $role);
+$stmt->bind_result($id, $name, $hashed_password, $role, $verified);
 $stmt->fetch();
 
-$passwordValid = false;
-if ($password !== null) {
-    $passwordValid = password_verify($password, $hashed_password);
-}
+$passwordValid = $password ? password_verify($password, $hashed_password) : false;
 
-$stmt->close();
-$conn->close();
-
-// Respond with user data including role
 echo json_encode([
     "exists" => true,
     "passwordValid" => $passwordValid,
+    "verified" => (bool)$verified,
     "user" => [
         "id" => $id,
         "name" => $name,
@@ -71,4 +59,7 @@ echo json_encode([
         "role" => $role
     ]
 ]);
+
+$stmt->close();
+$conn->close();
 ?>

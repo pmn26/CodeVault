@@ -63,7 +63,7 @@ function App() {
           />
 
           <Route path="/folders" element={<FoldersPage />} />
-          <Route path="/folders/:folderId" element={<FolderContent />} />
+          <Route path="/folders/:folderId/:name" element={<FolderContent />} />
 
           <Route path="/projects" element={<Projects />} />
           <Route path="/userprofile" element={<UserProfile />} />

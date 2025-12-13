@@ -51,11 +51,11 @@ const Review = () => {
     };
 
     try {
-      const response = await fetch("https://sheetdb.io/api/v1/d133j3fpf1wek", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(paymentData),
-      });
+      const response = await fetch("http://localhost/CodeVault/codevault/codevault-backend/api/save_payment.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(paymentData),
+    });
 
       if (response.ok) {
         setStatus("✅ Payment details saved successfully!");

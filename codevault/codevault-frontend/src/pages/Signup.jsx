@@ -15,10 +15,14 @@ function Signup() {
   const [showPassword, setShowPassword] = useState(false);
   const [status, setStatus] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showOtpModal, setShowOtpModal] = useState(false);
+  const [otp, setOtp] = useState("");
+  const [otpEmail, setOtpEmail] = useState("");
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
 
   const navigate = useNavigate();
 
-  // 🔹 Google login + backend integration
+  // Google login
   const handleGoogleLogin = async () => {
     try {
       const result = await signInWithPopup(auth, provider);
@@ -28,20 +32,19 @@ function Signup() {
         data: [
           { email: user.email, name: user.displayName, password: "google_placeholder" },
         ],
+        verifyNow: true,
       };
 
-      // Send Google user to PHP backend
       const res = await axios.post(
         "http://localhost/CodeVault/codevault/codevault-backend/api/register.php",
         data,
         { headers: { "Content-Type": "application/json" } }
       );
 
-      console.log("✅ Google backend response:", res.data);
       setStatus(res.data.message);
       navigate("/Login");
     } catch (error) {
-      console.error("❌ Google Sign-In Error:", error);
+      console.error("Google Sign-In Error:", error);
       setStatus("⚠️ Google login failed");
     }
   };
@@ -65,16 +68,19 @@ function Signup() {
     password.trim() !== "" &&
     agreement;
 
-  // 🔹 Email/password registration
-  const handleSignup = async () => {
+  // Step 0: Show confirmation modal before sending registration
+  const handleGetStartedClick = () => {
     if (!allValid) return;
+    setShowConfirmModal(true);
+  };
 
+  // Step 1: Send registration OTP or create account for later verification
+  const handleSignup = async (verifyNow) => {
+    setShowConfirmModal(false);
     setLoading(true);
     setStatus("");
 
-    const data = {
-      data: [{ email, name, password }],
-    };
+    const data = { data: [{ email, name, password }], verifyNow };
 
     try {
       const res = await axios.post(
@@ -83,13 +89,50 @@ function Signup() {
         { headers: { "Content-Type": "application/json" } }
       );
 
-      const message = res.data.message;
+      if (res.data.success) {
+        if (verifyNow) {
+          setOtpEmail(email);
+          setShowOtpModal(true);
+          setStatus("✅ OTP sent! Please check your Gmail.");
+        } else {
+          setStatus("✅ Account created! You can verify your email later.");
+          navigate("/Login");
+        }
+      } else {
+        setStatus(res.data.message || "❌ Failed to register user");
+      }
+    } catch (error) {
+      setStatus(
+        error.response?.data?.message || "⚠️ Something went wrong. Please try again."
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
 
-      if (message === "User registered successfully") {
-        setStatus("✅ Signup successful!");
+  // Step 2: Verify OTP
+  const handleVerifyOtp = async () => {
+    if (otp.trim().length !== 6) {
+      setStatus("⚠️ Please enter the 6-digit OTP");
+      return;
+    }
+
+    setLoading(true);
+    setStatus("");
+
+    try {
+      const res = await axios.post(
+        "http://localhost/CodeVault/codevault/codevault-backend/api/verify_otp.php",
+        { email: otpEmail, code: otp },
+        { headers: { "Content-Type": "application/json" } }
+      );
+
+      if (res.data.success) {
+        setStatus("✅ Email verified! Registration complete.");
+        setShowOtpModal(false);
         navigate("/Login");
       } else {
-        setStatus(message || "❌ Failed to register user");
+        setStatus(res.data.message || "❌ Invalid OTP");
       }
     } catch (error) {
       setStatus(
@@ -177,16 +220,53 @@ function Signup() {
           </>
         )}
 
+        {/* Get Started button */}
         <button
           className={`GetStarted ${allValid ? "active" : ""}`}
           disabled={!allValid || loading}
-          onClick={handleSignup}
+          onClick={handleGetStartedClick}
         >
           {loading ? "Submitting..." : "Get Started"}
         </button>
 
         {status && <p className="StatusText">{status}</p>}
       </div>
+
+      {/* Confirm modal: Verify Now or Later */}
+      {showConfirmModal && (
+        <div className="OtpModal">
+          <div className="OtpContent">
+            <h3>Verify your email</h3>
+            <p>Do you want to verify your email now or later?</p>
+            <div style={{ display: "flex", justifyContent: "space-between" }}>
+              <button onClick={() => handleSignup(true)}>Verify Now</button>
+              <button onClick={() => handleSignup(false)}>Verify Later</button>
+            </div>
+            <button onClick={() => setShowConfirmModal(false)}>Cancel</button>
+          </div>
+        </div>
+      )}
+
+      {/* OTP Modal */}
+      {showOtpModal && (
+        <div className="OtpModal">
+          <div className="OtpContent">
+            <h3>Enter OTP</h3>
+            <p>We sent a 6-digit code to {otpEmail}</p>
+            <input
+              type="text"
+              maxLength={6}
+              value={otp}
+              onChange={(e) => setOtp(e.target.value)}
+              className="OtpInput"
+            />
+            <button onClick={handleVerifyOtp} disabled={loading}>
+              {loading ? "Verifying..." : "Verify OTP"}
+            </button>
+            <button onClick={() => setShowOtpModal(false)}>Cancel</button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

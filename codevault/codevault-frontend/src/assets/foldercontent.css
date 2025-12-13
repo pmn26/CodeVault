@@ -273,3 +273,144 @@
     width: 300px;
   }
 }
+
+.code-preview {
+  background-color: #1e1e1e;
+  color: #d4d4d4;
+  padding: 15px;
+  border-radius: 8px;
+  max-height: 400px;
+  overflow-y: auto;
+  font-family: 'Fira Code', monospace;
+  font-size: 14px;
+  white-space: pre-wrap;
+  margin: 10px 0;
+}
+
+/* File Content Popup - Dark Theme */
+.popup-box.file-content-popup {
+  background: var(--panel-bg); /* match main panel */
+  width: 1000px;
+  max-width: 95%;
+  height: 600px;
+  border-radius: 12px;
+  padding: 25px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  color: var(--text-color);
+}
+
+/* Close button */
+.popup-box .close-btn {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  font-size: 22px;
+  color: var(--text-color);
+}
+
+.popup-box .close-btn:hover {
+  color: var(--accent-blue);
+}
+
+/* Container for code + info */
+.file-content-container {
+  display: flex;
+  gap: 20px;
+  height: 100%;
+  margin-top: 40px;
+}
+
+/* Code section */
+.code-section {
+  flex: 3;
+  background: #1a1a4a; /* dark folder blue */
+  border-radius: 10px;
+  overflow: auto;
+  padding: 20px;
+}
+
+.code-section pre {
+  margin: 0;
+  font-family: 'Fira Code', monospace;
+  font-size: 15px;
+  line-height: 1.5;
+  color: #f5f5f5;
+}
+
+/* Info section */
+.file-info-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 10px;
+  background: var(--folder-bg);
+  padding: 15px;
+  border-radius: 10px;
+  overflow-y: auto;
+  color: var(--text-color);
+}
+
+.file-info-section h3 {
+  font-size: 1.2rem;
+  margin-bottom: 8px;
+}
+
+.file-info-section p {
+  font-size: 0.95rem;
+  margin: 4px 0;
+}
+
+/* Action buttons */
+.file-info-section .action-btn {
+  margin-top: auto;
+  padding: 10px;
+  font-size: 0.95rem;
+  cursor: pointer;
+  border: none;
+  background-color: var(--accent-blue);
+  color: white;
+  border-radius: 8px;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.file-info-section .action-btn:hover {
+  background-color: #5265e3;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .file-content-container {
+    flex-direction: column;
+    gap: 15px;
+  }
+  .code-section, .file-info-section {
+    flex: unset;
+    width: 100%;
+    height: 300px;
+  }
+}
+
+.back-btn {
+  background: var(--light-blue);
+  color: white;
+  border: none;
+  padding: 6px 16px;
+  border-radius: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  margin-right: 10px; /* space between back button and title */
+  transition: all 0.2s ease;
+  width: 100px;
+}
+
+.back-btn:hover {
+  background: var(--accent-blue);
+  transform: scale(1.05);
+}

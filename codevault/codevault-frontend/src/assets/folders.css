@@ -3,263 +3,133 @@
   --medium-blue: #1a1a4a;
   --light-blue: #4d5baa;
   --accent-blue: #6f7dfb;
-  --panel-bg: #0b0b38;
   --folder-bg: #1b1b63;
+  --panel-bg: #0b0b38;
   --text-color: #f5f5f5;
 }
 
 /* PAGE LAYOUT */
 .folders-page {
-  padding: 100px 40px 40px; /* Added top padding to avoid navbar overlap */
+  padding: 100px 40px 40px;
   background-color: var(--dark-blue);
   min-height: 100vh;
   font-family: "Poppins", sans-serif;
   color: var(--text-color);
-  box-sizing: border-box;
 }
 
-/* HEADER */
 .folders-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 40px;
-  flex-wrap: wrap;
-  gap: 12px;
 }
 
-.folders-header h2 {
-  font-size: 22px;
-  font-weight: 600;
-  color: var(--text-color);
-  margin: 0;
-}
-
-/* BUTTONS */
-.folders-controls {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-
-.create-btn {
+.folders-controls button {
   background-color: var(--light-blue);
   color: white;
   border: none;
-  padding: 8px 22px;
+  padding: 8px 20px;
   border-radius: 20px;
   cursor: pointer;
   font-weight: 500;
   transition: all 0.25s ease;
-  white-space: nowrap;
 }
-
-.create-btn:hover {
-  background-color: var(--accent-blue);
-  transform: scale(1.05);
-}
+.folders-controls button:hover { background-color: var(--accent-blue); transform: scale(1.05); }
 
 /* FOLDER GRID */
 .folders-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 40px;
-  justify-items: center;
-  width: 100%;
-  box-sizing: border-box;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 30px;
 }
 
-/* FOLDER ITEM */
 .folder-item {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
-  cursor: pointer;
-  transition: all 0.3s ease;
+  padding: 20px;
   background: var(--folder-bg);
   border-radius: 16px;
-  padding: 35px 25px;
-  width: 100%;
-  max-width: 220px;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.25);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  cursor: pointer;
+  transition: transform 0.2s ease;
 }
+.folder-item:hover { transform: translateY(-5px) scale(1.05); }
+.folder-icon { font-size: 50px; color: var(--accent-blue); margin-bottom: 12px; }
+.folder-item p { font-weight: 600; text-align: center; font-size: 15px; color: var(--text-color); }
 
-.folder-item:hover {
-  transform: translateY(-6px) scale(1.05);
-  box-shadow: 0 8px 25px rgba(111, 125, 251, 0.35);
-  border-color: rgba(111, 125, 251, 0.5);
-}
-
-.folder-icon {
-  font-size: 70px;
-  color: var(--accent-blue);
-  margin-bottom: 14px;
-  transition: all 0.3s ease;
-}
-
-.folder-item:hover .folder-icon {
-  color: #9da8ff;
-  filter: drop-shadow(0px 3px 8px rgba(111, 125, 251, 0.6));
-}
-
-.folder-item p {
-  font-weight: 600;
-  color: var(--text-color);
-  text-align: center;
-  font-size: 16px;
-  margin-top: 6px;
+.folder-menu {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  cursor: pointer;
 }
 
 /* POPUP MODAL */
 .popup-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.7);
+  background: rgba(0,0,0,0.7);
   display: flex;
-  align-items: center;
   justify-content: center;
-  z-index: 100;
+  align-items: center;
+  z-index: 999;
 }
 
 .popup-box {
   background: var(--panel-bg);
-  padding: 30px;
+  padding: 15px 20px;
   border-radius: 12px;
   width: 90%;
-  max-width: 350px;
-  position: relative;
+  max-width: 320px;
   text-align: center;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
-  animation: fadeIn 0.25s ease-in-out;
+  position: relative;
 }
 
 .popup-box h3 {
-  margin-bottom: 20px;
   color: var(--text-color);
+  margin-bottom: 8px;
 }
 
-.popup-box input[type="text"] {
-  background: white;
-  color: black;
-  padding: 10px;
-  border-radius: 8px;
+.popup-box input {
   width: 100%;
+  padding: 8px;
+  border-radius: 6px;
   border: none;
-  margin-bottom: 15px;
-  font-size: 15px;
+  margin-bottom: 10px;
+  font-size: 14px;
 }
 
-.create-folder-btn {
-  background: var(--accent-blue);
-  color: white;
+.popup-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.save-btn, .delete-btn, .create-folder-btn {
+  padding: 6px 12px;
+  border-radius: 6px;
   border: none;
-  padding: 10px 18px;
-  border-radius: 8px;
   cursor: pointer;
   font-weight: 500;
-  transition: 0.2s;
-  width: 100%;
+  font-size: 14px;
 }
+.save-btn { background-color: #4CAF50; color: #fff; }
+.delete-btn { background-color: #f44336; color: #fff; }
+.create-folder-btn { background-color: var(--accent-blue); color: #fff; width: 100%; }
 
-.create-folder-btn:hover {
-  background: #5265e3;
-}
+.save-btn:hover { background-color: #45a049; }
+.delete-btn:hover { background-color: #d32f2f; }
+.create-folder-btn:hover { background-color: #5265e3; }
 
 .close-btn {
   position: absolute;
-  top: 12px;
-  right: 12px;
-  background: transparent;
+  top: 8px;
+  right: 8px;
   border: none;
-  color: white;
-  font-size: 18px;
+  background: transparent;
+  color: var(--text-color);
+  font-size: 16px;
   cursor: pointer;
 }
-
-.close-btn:hover {
-  color: #ff7676;
-}
-
-/* RESPONSIVE DESIGN */
-@media (max-width: 1024px) {
-  .folders-page {
-    padding: 90px 30px;
-  }
-
-  .folders-grid {
-    gap: 30px;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  }
-
-  .folder-item {
-    max-width: 180px;
-    padding: 28px 18px;
-  }
-}
-
-@media (max-width: 768px) {
-  .folders-page {
-    padding: 80px 20px;
-  }
-
-  .folders-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 15px;
-  }
-
-  .folders-header h2 {
-    font-size: 20px;
-  }
-
-  .folders-grid {
-    gap: 25px;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  }
-
-  .folder-item {
-    max-width: 160px;
-    padding: 25px 15px;
-  }
-
-  .folder-icon {
-    font-size: 60px;
-  }
-
-  .folder-item p {
-    font-size: 14px;
-  }
-}
-
-@media (max-width: 480px) {
-  .folders-page {
-    padding: 70px 16px;
-  }
-
-  .folder-item {
-    max-width: 140px;
-    padding: 20px 12px;
-  }
-
-  .folder-icon {
-    font-size: 50px;
-  }
-
-  .folder-item p {
-    font-size: 13px;
-  }
-}
-
-/* ANIMATION */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
+.close-btn:hover { color: #ff7676; }
