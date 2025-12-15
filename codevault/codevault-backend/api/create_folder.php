@@ -1,6 +1,6 @@
 <?php
 // === CORS headers must be first ===
-$frontend = "http://localhost:5174";
+$frontend = "http://localhost:5173";
 
 header("Access-Control-Allow-Origin: $frontend");
 header("Access-Control-Allow-Credentials: true");

@@ -1,32 +1,52 @@
 import React, { useRef, useState, useEffect } from "react";
 import axios from "axios";
+import Modal from "../components/modal";
 import "../assets/admin.css";
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 
 export default function AdminContent() {
 const fileInputRef = useRef(null);
+
 const [selectedFile, setSelectedFile] = useState(null);
 const [files, setFiles] = useState([]);
 const [sortKey, setSortKey] = useState("date_desc");
 const [loading, setLoading] = useState(true);
 const [uploading, setUploading] = useState(false);
+const [deleting, setDeleting] = useState(false);
 
-// Sorting options
+// Modal states
+const [showUploadModal, setShowUploadModal] = useState(false);
+const [showViewModal, setShowViewModal] = useState(false);
+const [showDeleteModal, setShowDeleteModal] = useState(false);
+const [fileToView, setFileToView] = useState(null);
+const [fileToDelete, setFileToDelete] = useState(null);
+
 const sortOptions = [
     { label: "Date (Newest)", value: "date_desc" },
     { label: "Date (Oldest)", value: "date_asc" },
     { label: "Title (A-Z)", value: "title_asc" },
 ];
 
-// Fetch uploaded files from backend
+// =====================
+// Fetch files
+// =====================
 const fetchFiles = async () => {
     setLoading(true);
     try {
     const res = await axios.get(
-        "http://localhost/CodeVault/codevault/codevault-backend/api/get_all_files_admin.php"
+        "http://localhost/CodeVault/codevault/codevault-backend/api/get_all_files_admin.php",
+        { withCredentials: true }
     );
-    setFiles(res.data.files || []);
+
+    if (res.data.success) {
+        setFiles(res.data.files || []);
+    } else {
+        alert(res.data.message || "Failed to load files");
+    }
     } catch (err) {
-    console.error("Error fetching files:", err);
+    console.error(err);
+    alert("Failed to load files");
     } finally {
     setLoading(false);
     }
@@ -36,225 +56,239 @@ useEffect(() => {
     fetchFiles();
 }, []);
 
-// Handle sorting
+// =====================
+// Sorting
+// =====================
 const sortedFiles = [...files].sort((a, b) => {
     const [key, order] = sortKey.split("_");
 
     if (key === "title") {
-    const comparison = a.title.localeCompare(b.title);
-    return order === "asc" ? comparison : -comparison;
+    const comp = (a.title || "").localeCompare(b.title || "");
+    return order === "asc" ? comp : -comp;
     }
 
     if (key === "date") {
-    const dateA = new Date(a.date);
-    const dateB = new Date(b.date);
-    const comparison = dateA.getTime() - dateB.getTime();
-    return order === "asc" ? comparison : -comparison;
+    const dA = new Date(a.date);
+    const dB = new Date(b.date);
+    const comp = dA - dB;
+    return order === "asc" ? comp : -comp;
     }
 
     return 0;
 });
 
-// File upload handlers
-const handleFileUploadClick = () => {
-    fileInputRef.current.click();
-};
+// =====================
+// Upload
+// =====================
+const handleUpload = async () => {
+    if (!selectedFile) return alert("Select a file first");
 
-const handleFileChange = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-    setSelectedFile(file);
-    handleUpload(file);
-    }
-};
-
-const handleSortChange = (event) => {
-    setSortKey(event.target.value);
-};
-
-// Upload code file to backend
-const handleUpload = async (file) => {
     setUploading(true);
-
     try {
     const formData = new FormData();
-    formData.append("file", file);
-    formData.append("folder_id", 1); // Change this as needed
-    formData.append("user_id", 1); // Change this as needed
+    formData.append("file", selectedFile);
+    formData.append("folder_id", 1);
+    formData.append("user_id", 1);
 
     const res = await axios.post(
         "http://localhost/CodeVault/codevault/codevault-backend/api/upload.php",
         formData,
-        {
-        headers: { "Content-Type": "multipart/form-data" },
-        withCredentials: true,
-        }
-    );
-
-    if (res.data.success) {
-        alert(res.data.message);
-        fetchFiles(); // Refresh file list after upload
-    } else {
-        alert("Upload failed: " + res.data.message);
-    }
-    } catch (err) {
-    console.error("Upload error:", err);
-    alert("Failed to upload file. Check console for details.");
-    } finally {
-    setUploading(false);
-    setSelectedFile(null);
-    }
-};
-
-// Handle file deletion
-const handleDelete = async (fileId) => {
-    if (!window.confirm("Are you sure you want to delete this file?")) return;
-
-    try {
-    const res = await axios.post(
-        "http://localhost/CodeVault/codevault/codevault-backend/api/delete_file_admin.php",
-        { file_id: fileId },
         { withCredentials: true }
     );
 
     if (res.data.success) {
-        alert(res.data.message);
-        setFiles(files.filter((f) => f.id !== fileId));
+        fetchFiles();
+        setShowUploadModal(false);
+        setSelectedFile(null);
+        if (fileInputRef.current) fileInputRef.current.value = "";
     } else {
-        alert("Error: " + res.data.message);
+        alert(res.data.message);
     }
     } catch (err) {
-    console.error("Delete error:", err);
-    alert("Failed to delete file. See console for details.");
+    console.error(err);
+    alert("Upload failed");
+    } finally {
+    setUploading(false);
     }
+};
+
+// =====================
+// View file (FIXED)
+// =====================
+const handleView = async (file) => {
+    setFileToView({ ...file, content: null, error: null });
+    setShowViewModal(true);
+
+    // Images & binaries → use direct URL only
+    if (isImageFile(file.title)) return;
+
+    try {
+    const res = await axios.get(
+        `http://localhost/CodeVault/codevault/codevault-backend/api/get_file_content.php?file_id=${file.id}`,
+        { withCredentials: true }
+    );
+
+    if (res.data?.success && res.data.content !== undefined) {
+        setFileToView((prev) => ({
+        ...prev,
+        content: res.data.content,
+        }));
+    } else {
+        throw new Error("Invalid response");
+    }
+    } catch (err) {
+    console.error(err);
+    setFileToView((prev) => ({
+        ...prev,
+        error: "Unable to load file content",
+    }));
+    }
+};
+
+// =====================
+// Delete
+// =====================
+const confirmDelete = async () => {
+    setDeleting(true);
+    try {
+    const res = await axios.post(
+        "http://localhost/CodeVault/codevault/codevault-backend/api/delete_file_admin.php",
+        { file_id: fileToDelete.id },
+        { withCredentials: true }
+    );
+
+    if (res.data.success) {
+        setFiles((prev) => prev.filter((f) => f.id !== fileToDelete.id));
+        setShowDeleteModal(false);
+        setFileToDelete(null);
+    } else {
+        alert(res.data.message);
+    }
+    } catch (err) {
+    console.error(err);
+    alert("Delete failed");
+    } finally {
+    setDeleting(false);
+    }
+};
+
+// =====================
+// Helpers
+// =====================
+const isImageFile = (name) => /\.(jpg|jpeg|png|gif|webp)$/i.test(name);
+const isTextFile = (name) => /\.(js|jsx|ts|tsx|php|py|html|css|json|md|txt)$/i.test(name);
+
+const getLanguage = (name) => {
+    const ext = name.split(".").pop().toLowerCase();
+    return (
+    {
+        js: "javascript",
+        jsx: "jsx",
+        ts: "typescript",
+        tsx: "tsx",
+        php: "php",
+        py: "python",
+        html: "html",
+        css: "css",
+        json: "json",
+        md: "markdown",
+    }[ext] || "text"
+    );
 };
 
 return (
     <>
     <section className="hero">
         <h2 className="hero-title">Content Management</h2>
-        <p className="hero-sub">
-        Review, upload, and manage all uploaded code files.
-        </p>
+        <p className="hero-sub">Review, upload, and manage all uploaded code files.</p>
     </section>
 
-    {/* Upload Button */}
-    <div
-        className="upload-section"
-        style={{ display: "flex", justifyContent: "flex-end", marginBottom: "20px" }}
-    >
-        <input
-        type="file"
-        ref={fileInputRef}
-        onChange={handleFileChange}
-        style={{ display: "none" }}
-        />
-        <button
-        className="action-btn btn-primary"
-        onClick={handleFileUploadClick}
-        disabled={uploading}
-        >
-        {uploading ? "Uploading..." : "+ Upload New File"}
+    <div className="upload-section" style={{ textAlign: "right" }}>
+        <button className="action-btn btn-primary" onClick={() => setShowUploadModal(true)}>
+        + Upload New File
         </button>
     </div>
 
     <div className="panel">
-        <div
-        className="panel-header"
-        style={{ justifyContent: "space-between", alignItems: "center" }}
-        >
-        <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
-            <h3 className="panel-title">Content Library</h3>
-
-            {/* Sort Dropdown */}
-            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-            <span
-                style={{
-                fontSize: "14px",
-                fontWeight: 600,
-                color: "rgba(255,255,255,0.7)",
-                }}
-            >
-                Sort:
-            </span>
-            <select
-                value={sortKey}
-                onChange={handleSortChange}
-                className="action-btn btn-primary"
-                style={{
-                appearance: "none",
-                padding: "8px 24px 8px 12px",
-                background:
-                    "rgba(102, 126, 234, 0.3) url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23a8b3ff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E\") no-repeat right 10px center",
-                backgroundSize: "12px",
-                cursor: "pointer",
-                fontSize: "14px",
-                minWidth: "160px",
-                }}
-            >
-                {sortOptions.map((option) => (
-                <option key={option.value} value={option.value}>
-                    {option.label}
-                </option>
-                ))}
-            </select>
-            </div>
-        </div>
-        </div>
-
-        {/* Table */}
         {loading ? (
-        <p style={{ padding: "20px", textAlign: "center" }}>Loading uploaded files...</p>
-        ) : sortedFiles.length === 0 ? (
-        <p style={{ padding: "20px", textAlign: "center" }}>No uploaded files found.</p>
+        <p>Loading...</p>
         ) : (
-        <div className="table-responsive-wrapper">
-            <table className="data-table">
+        <table className="data-table">
             <thead>
-                <tr>
+            <tr>
                 <th>ID</th>
                 <th>Filename</th>
                 <th>Uploader</th>
-                <th>File Path</th>
-                <th>Date Uploaded</th>
+                <th>Date</th>
                 <th>Actions</th>
-                </tr>
+            </tr>
             </thead>
-
             <tbody>
-                {sortedFiles.map((file) => (
+            {sortedFiles.map((file) => (
                 <tr key={file.id}>
-                    <td>#{file.id}</td>
-                    <td>{file.title}</td>
-                    <td>{file.author}</td>
-                    <td>
-                    <span style={{ fontSize: "13px", color: "rgba(255,255,255,0.7)" }}>
-                        {file.location}
-                    </span>
-                    </td>
-                    <td>{new Date(file.date).toLocaleString()}</td>
-                    <td>
-                    <button
-                        className="action-btn btn-primary"
-                        onClick={() => window.open(file.url, "_blank")}
-                    >
-                        View
+                <td>#{file.id}</td>
+                <td>{file.title}</td>
+                <td>{file.author}</td>
+                <td>{new Date(file.date).toLocaleString()}</td>
+                <td>
+                    <button className="action-btn btn-primary" onClick={() => handleView(file)}>
+                    View
                     </button>
                     <button
-                        className="action-btn btn-danger"
-                        style={{ marginLeft: "8px" }}
-                        onClick={() => handleDelete(file.id)}
+                    className="action-btn btn-danger"
+                    onClick={() => {
+                        setFileToDelete(file);
+                        setShowDeleteModal(true);
+                    }}
                     >
-                        Delete
+                    Delete
                     </button>
-                    </td>
+                </td>
                 </tr>
-                ))}
+            ))}
             </tbody>
-            </table>
-        </div>
+        </table>
         )}
     </div>
+
+    {/* View Modal */}
+    <Modal isOpen={showViewModal} onClose={() => setShowViewModal(false)}>
+        <h3 className="modal-header">Viewing {fileToView?.title}</h3>
+        <div className="modal-body">
+        {fileToView?.error ? (
+            <p style={{ color: "red" }}>{fileToView.error}</p>
+        ) : fileToView?.content && isTextFile(fileToView.title) ? (
+            <SyntaxHighlighter
+            language={getLanguage(fileToView.title)}
+            style={oneDark}
+            customStyle={{ maxHeight: 400, overflow: "auto" }}
+            >
+            {fileToView.content}
+            </SyntaxHighlighter>
+        ) : isImageFile(fileToView?.title) ? (
+            <img src={fileToView.url} alt="preview" style={{ maxWidth: "100%" }} />
+        ) : (
+            <p>Loading...</p>
+        )}
+        </div>
+    </Modal>
+
+    {/* Upload Modal */}
+    <Modal isOpen={showUploadModal} onClose={() => setShowUploadModal(false)}>
+        <h3 className="modal-header">Upload File</h3>
+        <input type="file" ref={fileInputRef} onChange={(e) => setSelectedFile(e.target.files[0])} />
+        <button className="action-btn" onClick={handleUpload} disabled={uploading}>
+        Upload
+        </button>
+    </Modal>
+
+    {/* Delete Modal */}
+    <Modal isOpen={showDeleteModal} onClose={() => setShowDeleteModal(false)}>
+        <h3 className="modal-header">Confirm Delete</h3>
+        <button className="action-btn btn-danger" onClick={confirmDelete} disabled={deleting}>
+        Delete
+        </button>
+    </Modal>
     </>
 );
 }

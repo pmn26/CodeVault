@@ -1,5 +1,5 @@
 <?php
-header("Access-Control-Allow-Origin: http://localhost:5174");
+header("Access-Control-Allow-Origin: http://localhost:5173");
 header("Access-Control-Allow-Credentials: true");
 header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
@@ -18,13 +18,16 @@ if ($conn->connect_error) {
     exit();
 }
 
-$stmt = $conn->prepare("SELECT id, name, email, password FROM users WHERE id = ?");
+// ✅ FIXED: Added 'verified' and 'status' to the SELECT query
+$stmt = $conn->prepare("SELECT id, name, email, password, verified, status FROM users WHERE id = ?");
 $stmt->bind_param("i", $user_id);
 $stmt->execute();
 $result = $stmt->get_result();
 $user = $result->fetch_assoc();
 
 if ($user) {
+    // ✅ OPTIONAL: Ensure 'verified' is an integer (0 or 1) for consistency
+    $user['verified'] = intval($user['verified']);
     echo json_encode(["success" => true, "user" => $user]);
 } else {
     echo json_encode(["success" => false, "message" => "User not found"]);

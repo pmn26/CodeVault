@@ -1,5 +1,5 @@
 <?php
-$frontend = "http://localhost:5174";
+$frontend = "http://localhost:5173";
 
 if (isset($_SERVER['HTTP_ORIGIN']) && $_SERVER['HTTP_ORIGIN'] === $frontend) {
     header("Access-Control-Allow-Origin: $frontend");

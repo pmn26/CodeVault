@@ -1,14 +1,14 @@
 import { FaFolder, FaFileAlt, FaEllipsisV } from "react-icons/fa";
 import "../assets/DashboardLayout.css";
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom"; 
+import { useNavigate } from "react-router-dom";
 import Modal from "../components/modal";
 import CreateFolder from "../components/CreateFolder";
 import UploadFiles from "../components/UploadFiles";
 import axios from "axios";
 
 function MainPage() {
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
   const [isCreateFolderOpen, setCreateFolderOpen] = useState(false);
   const [isUploadOpen, setUploadOpen] = useState(false);
   const [folders, setFolders] = useState([]);
@@ -19,6 +19,19 @@ function MainPage() {
   const user = JSON.parse(localStorage.getItem("user"));
   const API_BASE = "http://localhost/CodeVault/codevault/codevault-backend/api";
 
+  // =====================
+  // Helpers
+  // =====================
+  const slugify = (text) =>
+    text
+      .toLowerCase()
+      .trim()
+      .replace(/\s+/g, "-")
+      .replace(/[^\w-]+/g, "");
+
+  // =====================
+  // Fetch folders
+  // =====================
   useEffect(() => {
     fetchFolders();
   }, []);
@@ -32,6 +45,9 @@ function MainPage() {
     }
   };
 
+  // =====================
+  // Create folder
+  // =====================
   const handleFolderCreate = async (name) => {
     if (!name.trim()) return alert("Please enter a folder name.");
     if (!user) return alert("User not logged in");
@@ -44,15 +60,18 @@ function MainPage() {
       );
 
       if (res.data.success) {
-        setFolders([...folders, { id: res.data.id || folders.length + 1, name }]);
+        setFolders([...folders, { id: res.data.id, name }]);
         setCreateFolderOpen(false);
-      } else alert("Error creating folder: " + res.data.message);
+      } else alert(res.data.message);
     } catch (err) {
       console.error(err);
       alert("Server error creating folder");
     }
   };
 
+  // =====================
+  // Edit folder
+  // =====================
   const handleEditFolder = async (id, newName) => {
     try {
       const res = await axios.post(
@@ -61,16 +80,17 @@ function MainPage() {
         { headers: { "Content-Type": "application/json" } }
       );
       if (res.data.success) {
-        setFolders(folders.map(f => (f.id === id ? { ...f, name: newName } : f)));
-      } else {
-        alert(res.data.message);
-      }
+        setFolders(folders.map((f) => (f.id === id ? { ...f, name: newName } : f)));
+      } else alert(res.data.message);
     } catch (err) {
       console.error(err);
       alert("Failed to edit folder");
     }
   };
 
+  // =====================
+  // Delete folder
+  // =====================
   const handleDeleteFolder = async (id) => {
     if (!window.confirm("Are you sure you want to delete this folder?")) return;
 
@@ -81,18 +101,19 @@ function MainPage() {
         { headers: { "Content-Type": "application/json" } }
       );
       if (res.data.success) {
-        setFolders(folders.filter(f => f.id !== id));
-      } else {
-        alert(res.data.message);
-      }
+        setFolders(folders.filter((f) => f.id !== id));
+      } else alert(res.data.message);
     } catch (err) {
       console.error(err);
       alert("Failed to delete folder");
     }
   };
 
+  // =====================
+  // Upload file
+  // =====================
   const handleFileUpload = async (file, folderId) => {
-    if (!folderId) return alert("Please select a folder to upload to");
+    if (!folderId) return alert("Please select a folder");
 
     const formData = new FormData();
     formData.append("file", file);
@@ -100,14 +121,11 @@ function MainPage() {
     formData.append("user_id", user.id);
 
     try {
-      const res = await axios.post(`${API_BASE}/upload_file.php`, formData, {
-        headers: { "Content-Type": "multipart/form-data" }
-      });
-
+      const res = await axios.post(`${API_BASE}/upload_file.php`, formData);
       if (res.data.success) {
-        alert(`File "${res.data.filename}" uploaded successfully!`);
         setUploadOpen(false);
-        navigate(`/folders/${folderId}`);
+        const folder = folders.find((f) => f.id === folderId);
+        navigate(`/folders/${folderId}/${slugify(folder.name)}`);
       } else alert(res.data.message);
     } catch (err) {
       console.error(err);
@@ -136,13 +154,11 @@ function MainPage() {
               type="text"
               value={editFolderName}
               onChange={(e) => setEditFolderName(e.target.value)}
-              placeholder="Folder name"
             />
             <div className="modal-buttons">
               <button
                 className="save-btn"
                 onClick={() => {
-                  if (!editFolderName.trim()) return alert("Folder name cannot be empty");
                   handleEditFolder(selectedFolder.id, editFolderName.trim());
                   setFolderModalOpen(false);
                 }}
@@ -183,7 +199,7 @@ function MainPage() {
       <div className="content-section">
         <h2>My Folders</h2>
         <div className="items-grid">
-          {folders.map(folder => (
+          {folders.map((folder) => (
             <div key={folder.id} className="item-card">
               <div className="folder-menu">
                 <FaEllipsisV
@@ -197,7 +213,10 @@ function MainPage() {
                 />
               </div>
 
-              <div className="folder-main" onClick={() => navigate(`/folders/${folder.id}`)}>
+              <div
+                className="folder-main"
+                onClick={() => navigate(`/folders/${folder.id}/${slugify(folder.name)}`)}
+              >
                 <FaFolder size={32} />
                 <p>{folder.name}</p>
               </div>

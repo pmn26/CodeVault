@@ -1,51 +1,65 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import "../assets/settings.css";
 
 function Settings() {
+  const API_BASE = "http://localhost/CodeVault/codevault/codevault-backend/api";
+
   const [activeSection, setActiveSection] = useState("account");
-  const [feedbackMessage, setFeedbackMessage] = useState("");
-  const [statusMessage, setStatusMessage] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [loggedUser, setLoggedUser] = useState(null);
 
-  const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
+  /* 🔐 Reset password */
+  const [showResetModal, setShowResetModal] = useState(false);
+  const [resetStep, setResetStep] = useState(1);
+  const [resetCode, setResetCode] = useState("");
+  const [newPassword, setNewPassword] = useState("");
 
-  const [loggedUser, setLoggedUser] = useState({ id: null, email: "", name: "", password: "", verified: 0 });
-  const [planStatus, setPlanStatus] = useState("default"); // "default" or "premium"
+  /* 📧 Verification */
+  const [showVerifyModal, setShowVerifyModal] = useState(false);
+  const [verifyCode, setVerifyCode] = useState("");
+  const [verifyMessage, setVerifyMessage] = useState("");
+  const [cooldown, setCooldown] = useState(0);
 
-  const [showVerifyPopup, setShowVerifyPopup] = useState(false);
-  const [verificationCode, setVerificationCode] = useState("");
-  const [timer, setTimer] = useState(0);
+  /* 📦 Subscription */
+  const [planStatus, setPlanStatus] = useState("Free");
 
-  const navigate = useNavigate();
-  const API_BASE = "http://localhost/CodeVault/codevault-backend/api";
+  /* 🆘 Support */
+  const [supportSubject, setSupportSubject] = useState("");
+  const [supportMessage, setSupportMessage] = useState("");
+  const [supportStatus, setSupportStatus] = useState("");
 
-  // --- Load user ---
+  /* ===============================
+     LOAD USER
+  =============================== */
+  const loadUserData = () => {
+    const stored = JSON.parse(localStorage.getItem("user"));
+    if (!stored?.id) return;
+
+    fetch(`${API_BASE}/get_user.php?user_id=${stored.id}`)
+      .then(res => res.json())
+      .then(data => {
+        if (!data.success) return;
+
+        const user = {
+          ...data.user,
+          verified: data.user.verified == 1 ? 1 : 0,
+        };
+
+        setLoggedUser(user);
+        setPlanStatus(data.user.status || "Free");
+        localStorage.setItem("user", JSON.stringify(user));
+      })
+      .catch(console.error);
+  };
+
   useEffect(() => {
-    const u = JSON.parse(localStorage.getItem("user")) || { id: null };
-    setLoggedUser(u);
-    if (u.id) {
-      fetch(`${API_BASE}/get_user.php?user_id=${u.id}`)
-        .then((res) => res.json())
-        .then((data) => {
-          if (data.success) {
-            setLoggedUser(data.user);
-            setUsername(data.user.name);
-            setEmail(data.user.email);
-            setPlanStatus(data.user.status);
-          }
-        })
-        .catch(console.error);
-    }
+    loadUserData();
   }, []);
 
-  // --- Send verification code ---
-  const handleSendVerification = async () => {
-    if (!loggedUser.email) return alert("No email found for this account.");
-    setTimer(30); // cooldown for resending
+  /* ===============================
+     SEND VERIFICATION EMAIL
+  =============================== */
+  const sendVerificationEmail = async () => {
+    if (cooldown > 0 || !loggedUser?.email) return;
 
     try {
       const res = await fetch(`${API_BASE}/send_verification.php`, {
@@ -53,238 +67,231 @@ function Settings() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: loggedUser.email }),
       });
+
       const data = await res.json();
+      setVerifyMessage(data.message);
+
       if (data.success) {
-        alert("✅ Verification code sent! Check your email.");
-        console.log("Debug code (for testing):", data.debug_code);
-      } else {
-        alert("❌ " + data.message);
+        setShowVerifyModal(true);
+        setCooldown(60);
       }
     } catch (err) {
+      setVerifyMessage("❌ Failed to send email");
       console.error(err);
-      alert("⚠️ Failed to send verification email.");
     }
   };
 
-  // --- Timer countdown ---
   useEffect(() => {
-    if (timer === 0) return;
-    const interval = setInterval(() => setTimer((t) => t - 1), 1000);
-    return () => clearInterval(interval);
-  }, [timer]);
+    if (cooldown === 0) return;
+    const timer = setInterval(() => {
+      setCooldown(c => (c > 0 ? c - 1 : 0));
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [cooldown]);
 
-  // --- Verify email ---
-  const handleVerifyCode = async () => {
+  /* ===============================
+     VERIFY EMAIL CODE
+  =============================== */
+  const verifyEmailCode = async () => {
+    if (!verifyCode.trim()) return;
+
     try {
       const res = await fetch(`${API_BASE}/verify_email.php`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: loggedUser.email, code: verificationCode }),
+        body: JSON.stringify({
+          email: loggedUser.email,
+          code: verifyCode,
+        }),
       });
+
       const data = await res.json();
+      setVerifyMessage(data.message);
+
       if (data.success) {
-        alert("✅ Email verified successfully!");
-        setLoggedUser((prev) => ({ ...prev, verified: 1 }));
-        setShowVerifyPopup(false);
-      } else {
-        alert("❌ " + data.message);
+        setShowVerifyModal(false);
+        setVerifyCode("");
+        loadUserData(); // refresh verified status
       }
     } catch (err) {
+      setVerifyMessage("❌ Verification failed");
       console.error(err);
-      alert("⚠️ Failed to verify email.");
     }
   };
 
-  // --- Account update ---
-  const handleAccountSubmit = async (e) => {
-    e.preventDefault();
-    if (!loggedUser.id) return;
+  /* ===============================
+     RESET PASSWORD
+  =============================== */
+  const sendResetCode = async () => {
+    const res = await fetch(`${API_BASE}/send_reset_code.php`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email: loggedUser.email }),
+    });
 
-    setLoading(true);
-    setStatusMessage("");
+    const data = await res.json();
+    if (data.success) setResetStep(2);
+  };
+
+  const resetPassword = async () => {
+    const res = await fetch(`${API_BASE}/reset_password.php`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        email: loggedUser.email,
+        code: resetCode,
+        password: newPassword,
+      }),
+    });
+
+    const data = await res.json();
+    if (data.success) {
+      setShowResetModal(false);
+      setResetStep(1);
+      setResetCode("");
+      setNewPassword("");
+    }
+  };
+
+  /* ===============================
+     SUPPORT
+  =============================== */
+  const sendSupportMessage = async () => {
+    if (!supportSubject.trim() || !supportMessage.trim()) {
+      setSupportStatus("❌ Please fill in all fields");
+      return;
+    }
 
     try {
-      const res = await fetch(`${API_BASE}/update_user.php`, {
+      const res = await fetch(`${API_BASE}/support_message.php`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ user_id: loggedUser.id, name: username, email, password }),
+        body: JSON.stringify({
+          email: loggedUser.email,
+          subject: supportSubject,
+          message: supportMessage,
+        }),
       });
+
       const data = await res.json();
-      setStatusMessage(data.message || (data.success ? "✅ Account updated!" : "❌ Failed to update."));
-      if (data.success) setPassword("");
-    } catch (err) {
-      console.error(err);
-      setStatusMessage("⚠️ Something went wrong");
-    } finally {
-      setLoading(false);
+      setSupportStatus(data.message);
+
+      if (data.success) {
+        setSupportSubject("");
+        setSupportMessage("");
+      }
+    } catch {
+      setSupportStatus("❌ Failed to send message");
     }
   };
 
-  // --- Feedback ---
-  const handleFeedbackSubmit = async (e) => {
-    e.preventDefault();
-    if (!loggedUser.id) return;
-
-    setLoading(true);
-    setStatusMessage("");
-
-    try {
-      const res = await fetch(`${API_BASE}/submit_feedback.php`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ user_id: loggedUser.id, message: feedbackMessage }),
-      });
-      const data = await res.json();
-      setStatusMessage(data.message || (data.success ? "✅ Message sent!" : "❌ Failed."));
-      if (data.success) setFeedbackMessage("");
-    } catch (err) {
-      console.error(err);
-      setStatusMessage("⚠️ Something went wrong");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // --- Render content ---
-  const renderContent = () => {
-    switch (activeSection) {
-      case "account":
-        return (
-          <div className="settings-section">
-            <h2>Account Management</h2>
-            <p>Update your username, email, or password.</p>
-
-            {loggedUser.email && (
-              <div className="user-info-box">
-                <p className="email-line">
-                  <strong>Email:</strong> {loggedUser.email}
-                  {!loggedUser.verified && (
-                    <span className="verify-warning" onClick={() => setShowVerifyPopup(true)}>
-                      ⚠ Verify your email
-                    </span>
-                  )}
-                </p>
-                <p>
-                  <strong>Password:</strong>{" "}
-                  <span className="masked-password">{showPassword ? loggedUser.password || "••••••••" : "••••••••"}</span>
-                  <button type="button" className="password-toggle" onClick={() => setShowPassword((s) => !s)}>
-                    {showPassword ? "Hide" : "Show"}
-                  </button>
-                </p>
-              </div>
-            )}
-
-            <form className="settings-form" onSubmit={handleAccountSubmit}>
-              <label>
-                Username:
-                <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} required />
-              </label>
-              <label>
-                Email:
-                <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
-              </label>
-              <label>
-                Password:
-                <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
-              </label>
-              <button type="submit" disabled={loading}>
-                {loading ? "Saving..." : "Save Changes"}
-              </button>
-              {statusMessage && <p className="status-message">{statusMessage}</p>}
-            </form>
-
-            {/* Verification Popup */}
-            {showVerifyPopup && (
-              <div className="popup-overlay">
-                <div className="popup-box">
-                  <h3>Verify Your Email</h3>
-                  <p>Enter the code sent to your email.</p>
-                  <input
-                    type="text"
-                    placeholder="Enter verification code"
-                    value={verificationCode}
-                    onChange={(e) => setVerificationCode(e.target.value)}
-                  />
-                  <div className="popup-buttons">
-                    <button onClick={handleVerifyCode}>Verify</button>
-                    <button onClick={handleSendVerification} disabled={timer > 0}>
-                      {timer > 0 ? `Resend in ${timer}s` : "Send Verification Code"}
-                    </button>
-                    <button onClick={() => setShowVerifyPopup(false)}>Close</button>
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-        );
-
-      case "subscription":
-        return (
-          <div className="settings-section">
-            <h2>Subscription & Billing</h2>
-            <div className="subscription-info">
-              <p>
-                <strong>Current Plan:</strong> {planStatus === "premium" ? "🌟 Premium Plan" : "Free Plan"}
-              </p>
-              <p>
-                <strong>Next Billing Date:</strong> {planStatus === "premium" ? "Next month" : "N/A"}
-              </p>
-              {planStatus !== "premium" && (
-                <button className="uniform-btn" onClick={() => navigate("/billing")}>Upgrade to Premium</button>
-              )}
-            </div>
-          </div>
-        );
-
-      case "privacy":
-        return (
-          <div className="settings-section">
-            <h2>Privacy Settings</h2>
-            <form className="settings-form">
-              <label><input type="checkbox" /> Allow others to see my profile</label>
-              <label><input type="checkbox" /> Enable two-factor authentication</label>
-              <label><input type="checkbox" /> Receive security alerts</label>
-              <button type="button" className="uniform-btn">Save Preferences</button>
-            </form>
-          </div>
-        );
-
-      case "support":
-        return (
-          <div className="settings-section">
-            <h2>Support & Feedback</h2>
-            <form className="settings-form" onSubmit={handleFeedbackSubmit}>
-              <label>
-                Message:
-                <textarea rows="4" value={feedbackMessage} onChange={(e) => setFeedbackMessage(e.target.value)} required />
-              </label>
-              <button type="submit" disabled={loading} className="uniform-btn">
-                {loading ? "Sending..." : "Send Message"}
-              </button>
-              {statusMessage && <p className="status-message">{statusMessage}</p>}
-            </form>
-          </div>
-        );
-
-      default:
-        return null;
-    }
-  };
+  if (!loggedUser) return <p>Loading...</p>;
 
   return (
     <div className="settings-container">
       <h1 className="settings-title">Settings</h1>
+
       <div className="settings-content">
         <div className="settings-menu">
-          <button className={activeSection === "account" ? "active" : ""} onClick={() => setActiveSection("account")}>Account Management</button>
-          <button className={activeSection === "subscription" ? "active" : ""} onClick={() => setActiveSection("subscription")}>Subscription & Billing</button>
-          <button className={activeSection === "privacy" ? "active" : ""} onClick={() => setActiveSection("privacy")}>Privacy Settings</button>
-          <button className={activeSection === "support" ? "active" : ""} onClick={() => setActiveSection("support")}>Support & Feedback</button>
-          <button onClick={() => navigate("/admin")}>Admin Panel</button>
+          <button onClick={() => setActiveSection("account")}>Account</button>
+          <button onClick={() => setActiveSection("subscription")}>Subscription</button>
+          <button onClick={() => setActiveSection("support")}>Support</button>
         </div>
 
-        <div className="settings-details">{renderContent()}</div>
+        <div className="settings-details">
+          {activeSection === "account" && (
+            <>
+              <p>
+                <strong>Verified:</strong>{" "}
+                {loggedUser.verified === 1 ? "Yes ✅" : "No ⚠️"}
+              </p>
+
+              {loggedUser.verified === 0 && (
+                <button
+                  className="uniform-btn"
+                  disabled={cooldown > 0}
+                  onClick={sendVerificationEmail}
+                >
+                  {cooldown > 0 ? `Resend in ${cooldown}s` : "Verification Email"}
+                </button>
+              )}
+
+              {loggedUser.verified === 1 && (
+                <button className="uniform-btn" onClick={() => setShowResetModal(true)}>
+                  Reset Password
+                </button>
+              )}
+
+            </>
+          )}
+
+          {activeSection === "subscription" && (
+            <>
+              <p><strong>Current Plan:</strong> {planStatus}</p>
+              <button className="uniform-btn" disabled>Upgrade Plan</button>
+            </>
+          )}
+
+          {activeSection === "support" && (
+            <>
+              <input
+                className="form-input"
+                placeholder="Subject"
+                value={supportSubject}
+                onChange={e => setSupportSubject(e.target.value)}
+              />
+              <textarea
+                className="form-textarea"
+                placeholder="Describe your issue..."
+                value={supportMessage}
+                onChange={e => setSupportMessage(e.target.value)}
+              />
+              <button className="uniform-btn" onClick={sendSupportMessage}>
+                Send Message
+              </button>
+              {supportStatus && <p>{supportStatus}</p>}
+            </>
+          )}
+        </div>
       </div>
+
+      {/* VERIFY MODAL */}
+      {showVerifyModal && (
+        <div className="popup-overlay">
+          <div className="popup-box">
+            <h3>Email Verification</h3>
+            <input
+              placeholder="Verification Code"
+              value={verifyCode}
+              onChange={e => setVerifyCode(e.target.value)}
+            />
+            <button onClick={verifyEmailCode}>Verify</button>
+            <p>{verifyMessage}</p>
+            <button onClick={() => setShowVerifyModal(false)}>Close</button>
+          </div>
+        </div>
+      )}
+
+      {/* RESET MODAL */}
+      {showResetModal && (
+        <div className="popup-overlay">
+          <div className="popup-box">
+            {resetStep === 1 && <button onClick={sendResetCode}>Send Code</button>}
+            {resetStep === 2 && (
+              <>
+                <input value={resetCode} onChange={e => setResetCode(e.target.value)} />
+                <input
+                  type="password"
+                  value={newPassword}
+                  onChange={e => setNewPassword(e.target.value)}
+                />
+                <button onClick={resetPassword}>Reset</button>
+              </>
+            )}
+            <button onClick={() => setShowResetModal(false)}>Close</button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

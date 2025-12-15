@@ -22,7 +22,6 @@ function Signup() {
 
   const navigate = useNavigate();
 
-  // Google login
   const handleGoogleLogin = async () => {
     try {
       const result = await signInWithPopup(auth, provider);
@@ -30,9 +29,14 @@ function Signup() {
 
       const data = {
         data: [
-          { email: user.email, name: user.displayName, password: "google_placeholder" },
+          {
+            email: user.email,
+            name: user.displayName,
+            password: null,
+            auth_provider: "google"
+          }
         ],
-        verifyNow: true,
+        verifyNow: false
       };
 
       const res = await axios.post(
@@ -41,8 +45,12 @@ function Signup() {
         { headers: { "Content-Type": "application/json" } }
       );
 
-      setStatus(res.data.message);
-      navigate("/Login");
+      if (res.data.success) {
+        setStatus("✅ Google account registered");
+        navigate("/Login");
+      } else {
+        setStatus(res.data.message || "❌ Registration failed");
+      }
     } catch (error) {
       console.error("Google Sign-In Error:", error);
       setStatus("⚠️ Google login failed");
@@ -68,13 +76,11 @@ function Signup() {
     password.trim() !== "" &&
     agreement;
 
-  // Step 0: Show confirmation modal before sending registration
   const handleGetStartedClick = () => {
     if (!allValid) return;
     setShowConfirmModal(true);
   };
 
-  // Step 1: Send registration OTP or create account for later verification
   const handleSignup = async (verifyNow) => {
     setShowConfirmModal(false);
     setLoading(true);
@@ -110,7 +116,6 @@ function Signup() {
     }
   };
 
-  // Step 2: Verify OTP
   const handleVerifyOtp = async () => {
     if (otp.trim().length !== 6) {
       setStatus("⚠️ Please enter the 6-digit OTP");
@@ -152,7 +157,6 @@ function Signup() {
           Already have an account? <a href="/login">Log in</a>
         </p>
 
-        {/* Google login */}
         <div className="SocialLogin">
           <button className="GoogleButton" onClick={handleGoogleLogin}>
             <img
@@ -220,7 +224,6 @@ function Signup() {
           </>
         )}
 
-        {/* Get Started button */}
         <button
           className={`GetStarted ${allValid ? "active" : ""}`}
           disabled={!allValid || loading}
@@ -232,7 +235,6 @@ function Signup() {
         {status && <p className="StatusText">{status}</p>}
       </div>
 
-      {/* Confirm modal: Verify Now or Later */}
       {showConfirmModal && (
         <div className="OtpModal">
           <div className="OtpContent">
@@ -247,7 +249,6 @@ function Signup() {
         </div>
       )}
 
-      {/* OTP Modal */}
       {showOtpModal && (
         <div className="OtpModal">
           <div className="OtpContent">

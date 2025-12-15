@@ -1,90 +1,209 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 export default function AdminAccountSettings() {
-  const handleUpdateProfile = () => {
-    alert("Profile updated successfully!");
+  const API_BASE = "http://localhost/CodeVault/codevault/codevault-backend/api";
+
+  const [admin, setAdmin] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  /* 🔐 Reset password */
+  const [showResetModal, setShowResetModal] = useState(false);
+  const [resetStep, setResetStep] = useState(1);
+  const [resetCode, setResetCode] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+
+  /* ===============================
+     LOAD ADMIN (REAL DATA)
+  =============================== */
+  useEffect(() => {
+    const stored = JSON.parse(localStorage.getItem("user"));
+    if (!stored?.id) return;
+
+    fetch(`${API_BASE}/get_user.php?user_id=${stored.id}`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (!data.success) return;
+
+        const rawVerified = data.user.verified;
+        const isVerified =
+          rawVerified === 1 ||
+          rawVerified === "1" ||
+          rawVerified === true ||
+          rawVerified === "true";
+
+        setAdmin({
+          ...data.user,
+          verified: isVerified ? 1 : 0,
+        });
+      })
+      .catch((err) => console.error(err));
+  }, []);
+
+  if (!admin) return <p>Loading admin profile...</p>;
+
+  /* ===============================
+     SEND RESET CODE
+  =============================== */
+  const sendResetCode = async () => {
+    if (admin.verified !== 1) {
+      alert("⚠️ Please verify your email first");
+      return;
+    }
+
+    try {
+      const res = await fetch(`${API_BASE}/send_reset_code.php`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: admin.email }),
+      });
+
+      const data = await res.json();
+      if (data.success) {
+        alert("✅ Reset code sent");
+        setResetStep(2);
+      } else {
+        alert(data.message);
+      }
+    } catch {
+      alert("⚠️ Failed to send reset code");
+    }
   };
 
-  const handleChangePassword = () => {
-    alert("Password changed successfully!");
+  /* ===============================
+     RESET PASSWORD
+  =============================== */
+  const resetPassword = async () => {
+    if (!newPassword.trim()) {
+      alert("Password cannot be empty");
+      return;
+    }
+
+    try {
+      const res = await fetch(`${API_BASE}/reset_password.php`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: admin.email,
+          code: resetCode,
+          password: newPassword,
+        }),
+      });
+
+      const data = await res.json();
+      if (data.success) {
+        alert("✅ Password reset successful");
+        setShowResetModal(false);
+        setResetStep(1);
+        setResetCode("");
+        setNewPassword("");
+      } else {
+        alert(data.message);
+      }
+    } catch {
+      alert("⚠️ Reset failed");
+    }
   };
 
-  const handleSavePreferences = () => {
-    alert("Preferences saved successfully!");
-  };
-
+  /* ===============================
+     UI
+  =============================== */
   return (
     <>
       <section className="hero">
         <h2 className="hero-title">Account Settings</h2>
-        <p className="hero-sub">Manage your admin account and preferences.</p>
+        <p className="hero-sub">Manage your admin account and security.</p>
       </section>
 
+      {/* PROFILE */}
       <div className="panel">
         <div className="panel-header">
           <h3 className="panel-title">Profile Information</h3>
         </div>
+
         <div className="form-group">
           <label className="form-label">Full Name</label>
-          <input type="text" className="form-input" defaultValue="Admin User" />
+          <input
+            type="text"
+            className="form-input"
+            value={admin.name}
+            readOnly
+          />
         </div>
+
         <div className="form-group">
           <label className="form-label">Email Address</label>
-          <input type="email" className="form-input" defaultValue="admin@codevault.com" />
+          <input
+            type="email"
+            className="form-input"
+            value={admin.email}
+            readOnly
+          />
         </div>
+
         <div className="form-group">
-          <label className="form-label">Phone Number</label>
-          <input type="tel" className="form-input" defaultValue="+1 234 567 8900" />
+          <label className="form-label">Verified</label>
+          <input
+            className="form-input"
+            value={admin.verified === 1 ? "Yes ✅" : "No ⚠️"}
+            readOnly
+          />
         </div>
-        <button className="action-btn btn-success" onClick={handleUpdateProfile}>
-          Update Profile
-        </button>
       </div>
 
+      {/* PASSWORD */}
       <div className="panel">
         <div className="panel-header">
           <h3 className="panel-title">Change Password</h3>
         </div>
-        <div className="form-group">
-          <label className="form-label">Current Password</label>
-          <input type="password" className="form-input" placeholder="Enter current password" />
-        </div>
-        <div className="form-group">
-          <label className="form-label">New Password</label>
-          <input type="password" className="form-input" placeholder="Enter new password" />
-        </div>
-        <div className="form-group">
-          <label className="form-label">Confirm New Password</label>
-          <input type="password" className="form-input" placeholder="Confirm new password" />
-        </div>
-        <button className="action-btn btn-success" onClick={handleChangePassword}>
-          Change Password
-        </button>
+
+        {admin.verified === 1 ? (
+          <button
+            className="action-btn btn-success"
+            onClick={() => setShowResetModal(true)}
+          >
+            Reset Password
+          </button>
+        ) : (
+          <p className="text-warning">
+            ⚠ Verify your email to reset password
+          </p>
+        )}
       </div>
 
-      <div className="panel">
-        <div className="panel-header">
-          <h3 className="panel-title">Notification Preferences</h3>
+      {/* RESET PASSWORD MODAL */}
+      {showResetModal && (
+        <div className="popup-overlay">
+          <div className="popup-box">
+            <h3>Reset Password</h3>
+
+            {resetStep === 1 && (
+              <>
+                <p>Send reset code to {admin.email}</p>
+                <button onClick={sendResetCode}>Send Code</button>
+              </>
+            )}
+
+            {resetStep === 2 && (
+              <>
+                <input
+                  placeholder="Verification Code"
+                  value={resetCode}
+                  onChange={(e) => setResetCode(e.target.value)}
+                />
+                <input
+                  type="password"
+                  placeholder="New Password"
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                />
+                <button onClick={resetPassword}>Reset Password</button>
+              </>
+            )}
+
+            <button onClick={() => setShowResetModal(false)}>Close</button>
+          </div>
         </div>
-        <div className="form-group">
-          <label className="form-label">Email Notifications</label>
-          <select className="form-select">
-            <option>All notifications</option>
-            <option>Important only</option>
-            <option>None</option>
-          </select>
-        </div>
-        <div className="form-group">
-          <label className="form-label">Desktop Notifications</label>
-          <select className="form-select">
-            <option>Enabled</option>
-            <option>Disabled</option>
-          </select>
-        </div>
-        <button className="action-btn btn-success" onClick={handleSavePreferences}>
-          Save Preferences
-        </button>
-      </div>
+      )}
     </>
   );
 }

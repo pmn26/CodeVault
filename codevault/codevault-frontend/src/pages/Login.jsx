@@ -16,12 +16,12 @@ const [loading, setLoading] = useState(false);
 const navigate = useNavigate();
 const allValid = /\S+@\S+\.\S+/.test(email) && password.trim() !== "";
 
-const handleEmailChange = (e) => setEmail(e.target.value);
-const handlePasswordChange = (e) => setPassword(e.target.value);
-
-// 🔹 Email/password login
+/* ===============================
+    🔹 EMAIL / PASSWORD LOGIN
+================================ */
 const handleLogin = async () => {
-    if (!allValid) return;
+    if (!allValid || loading) return;
+
     setStatus("");
     setLoading(true);
 
@@ -34,32 +34,45 @@ const handleLogin = async () => {
 
     const data = res.data;
 
+    /* 🚧 MAINTENANCE MODE (HIGHEST PRIORITY) */
+    if (data.maintenance) {
+        navigate("/maintenance", { replace: true });
+        return;
+    }
+
     if (!data.exists) {
         setStatus("❌ User not found. Please sign up first.");
-    } else if (!data.passwordValid) {
-        setStatus("❌ Invalid password");
-    } else {
-        // Store user data
-        localStorage.setItem("user", JSON.stringify(data.user));
-        setStatus("✅ Login successful!");
+        return;
+    }
 
-        // Redirect based on role
-        if (data.user.role === "admin") {
-        navigate("/admin");
-        } else {
-        navigate("/MainPage");
-        }
+    if (!data.passwordValid) {
+        setStatus("❌ Invalid password");
+        return;
+    }
+
+    /* ✅ LOGIN SUCCESS */
+    localStorage.setItem("user", JSON.stringify(data.user));
+    setStatus("✅ Login successful!");
+
+    if (data.user.role === "admin") {
+        navigate("/admin", { replace: true });
+    } else {
+        navigate("/MainPage", { replace: true });
     }
     } catch (err) {
-    setStatus("⚠️ Server error or invalid credentials");
     console.error(err);
+    setStatus("⚠️ Server error. Please try again.");
     } finally {
     setLoading(false);
     }
 };
 
-// 🔹 Google login
+/* ===============================
+    🔹 GOOGLE LOGIN
+================================ */
 const handleGoogleLogin = async () => {
+    if (loading) return;
+
     setStatus("");
     setLoading(true);
 
@@ -67,7 +80,6 @@ const handleGoogleLogin = async () => {
     const result = await signInWithPopup(auth, provider);
     const user = result.user;
 
-    // Send Google user to backend to check if registered
     const res = await axios.post(
         "http://localhost/CodeVault/codevault/codevault-backend/api/login.php",
         { email: user.email },
@@ -76,22 +88,29 @@ const handleGoogleLogin = async () => {
 
     const data = res.data;
 
+    /* 🚧 MAINTENANCE MODE (HIGHEST PRIORITY) */
+    if (data.maintenance) {
+        navigate("/maintenance", { replace: true });
+        return;
+    }
+
     if (!data.exists) {
         setStatus("❌ Google account not registered. Please sign up first.");
-    } else {
-        localStorage.setItem("user", JSON.stringify(data.user));
-        setStatus("✅ Google login successful!");
+        return;
+    }
 
-        // Redirect based on role
-        if (data.user.role === "admin") {
-        navigate("/admin");
-        } else {
-        navigate("/MainPage");
-        }
+    /* ✅ GOOGLE LOGIN SUCCESS */
+    localStorage.setItem("user", JSON.stringify(data.user));
+    setStatus("✅ Google login successful!");
+
+    if (data.user.role === "admin") {
+        navigate("/admin", { replace: true });
+    } else {
+        navigate("/MainPage", { replace: true });
     }
     } catch (error) {
-    setStatus("⚠️ Google login failed");
     console.error(error);
+    setStatus("⚠️ Google login failed");
     } finally {
     setLoading(false);
     }
@@ -101,6 +120,7 @@ return (
     <div className="LoginContainer">
     <div className="LoginCard">
         <img src={logo} alt="Logo" className="LoginLogo" />
+
         <h2 className="LoginTitle">Welcome Back</h2>
         <p className="LoginSubtext">
         Don’t have an account? <a href="/Signup">Sign up</a>
@@ -126,14 +146,13 @@ return (
         <span>Or, log in with your email</span>
         </div>
 
-        {/* Email/password login */}
         <label className="Label">Email *</label>
         <input
         type="email"
         className="EmailInput"
         placeholder="Enter your email"
         value={email}
-        onChange={handleEmailChange}
+        onChange={(e) => setEmail(e.target.value)}
         />
 
         <label className="Label">Password *</label>
@@ -143,7 +162,7 @@ return (
             className="EmailInput"
             placeholder="Enter your password"
             value={password}
-            onChange={handlePasswordChange}
+            onChange={(e) => setPassword(e.target.value)}
         />
         <span
             className="EyeIcon"
